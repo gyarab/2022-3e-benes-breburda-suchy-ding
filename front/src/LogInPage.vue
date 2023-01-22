@@ -5,6 +5,10 @@ function toHomePage(){
   window.location.hash = '#/'
 }
 
+function toRegisterPage(){
+  window.location.hash = '#/register'
+}
+
 const passwordField = ref(null)
 
 function switchVisibility(){
@@ -26,4 +30,6 @@ function switchVisibility(){
   <input type="password" ref="passwordField" placeholder="Password">
   <button @click="switchVisibility">show / hide</button>
   <button @click="toHomePage">Log in</button>
+  <p>Not a user yet?</p>
+  <button @click="toRegisterPage">Register</button>
 </template> 
