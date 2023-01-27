@@ -32,12 +32,40 @@ const currentView = computed(() => {
 
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Manjari');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Manjari;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: white;
   margin-top: 60px;
 }
+
+body {
+  @apply bg-[#13131b]
+}
+
+button {
+  width: 10%;
+  padding: 6px 12px;
+  border: 2px solid #20201E;
+
+  @apply bg-[#222230] rounded-3xl text-white hover:bg-[#303044]
+}
+text {
+  color: white;
+  
+}
+
+input {
+  width: 20%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border-radius: 25px;
+
+  @apply bg-[#222230] content-center
+}
+
 </style>
