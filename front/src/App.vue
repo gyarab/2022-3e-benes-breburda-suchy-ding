@@ -64,6 +64,7 @@ input {
   padding: 12px 20px;
   margin: 8px 0;
   border-radius: 25px;
+  -webkit-text-fill-color: rgb(255, 255, 255);
 
   @apply bg-[#222230] content-center
 }
