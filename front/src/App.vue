@@ -3,12 +3,20 @@ import { ref, computed } from 'vue'
 import Home from './HomePage.vue'
 import LogIn from './LogInPage.vue'
 import Register from './RegisterPage.vue'
+import Profile from './ProfilePage.vue'
+import Post from './PostPage.vue'
+
+
 
 
 const routes = {
   '/': Home,
   '/login': LogIn,
-  '/register': Register
+  '/register': Register,
+  '/profile': Profile,
+  '/post': Post
+
+
 }
 
 const currentPath = ref(window.location.hash)
@@ -27,6 +35,10 @@ const currentView = computed(() => {
   <a href="#/">Home</a>
   <a href="#/login">Log in</a>
   <a href="#/register">Register</a>
+  <a href="#/profile">Profile</a>
+  <a href="#/post">Post</a>
+
+
   <component :is="currentView" />
 </template> 
 
