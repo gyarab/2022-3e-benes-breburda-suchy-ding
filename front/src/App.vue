@@ -31,7 +31,7 @@ const currentView = computed(() => {
 </script>
 
 <template>
-  <notifications position="top center" />
+  <NotificationsPage></NotificationsPage>
   <a href="#/">Home</a>
   <a href="#/login">Log in</a>
   <a href="#/register">Register</a>
@@ -50,35 +50,36 @@ const currentView = computed(() => {
   font-family: Manjari;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: white;
   margin-top: 60px;
 }
 
 body {
-  @apply bg-[#13131b]
+  background: #13131b;
 }
 
 button {
-  width: 10%;
-  padding: 6px 12px;
+  padding: 0.75rem 1.5rem;
   border: 2px solid #20201E;
+  font-family: Manjari;
 
   @apply bg-[#222230] rounded-3xl text-white hover:bg-[#303044]
 }
+
 text {
   color: white;
-  
 }
 
 input {
-  width: 20%;
-  padding: 12px 20px;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
   margin: 8px 0;
   border-radius: 25px;
   -webkit-text-fill-color: rgb(255, 255, 255);
+  font-family: Manjari;
+  border: none;
 
-  @apply bg-[#222230] content-center
+  @apply bg-[#222230]
 }
 
 </style>

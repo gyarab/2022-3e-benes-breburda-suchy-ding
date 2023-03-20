@@ -1,12 +1,14 @@
 <script setup>
 import { ref } from 'vue'
+import store from './store'
 
-function toHomePage(){
+const username = ref('')
+
+function login() {
+  store.user = {
+    username: username.value,
+  }
   window.location.hash = '#/'
-}
-
-function toRegisterPage(){
-  window.location.hash = '#/register'
 }
 
 const passwordField = ref(null)
@@ -24,24 +26,37 @@ function switchVisibility(){
 </script>
 
 <template>
-  <div class="grid grid-rows-8">
-    <div> <p>Username: {{ message }}</p> </div>
-    <div> <input v-model="message" placeholder="Your username here" class="input_box" /> </div>
-    <div> <p>Password:</p> </div>
-    <div> <input type="password" ref="passwordField" placeholder="Password"> </div>
-    <div> <button @click="switchVisibility">show / hide</button> </div>
-    <div> <button @click="toHomePage">Log in</button> </div>
-    <div> <p>Not a user yet?</p> </div>
-    <div> <button @click="toRegisterPage">Register</button> </div>
+  <div class="container">
+    <div><input v-model="username" placeholder="Username"></div>
+    <div class="password-field">
+      <div><input type="password" ref="passwordField" placeholder="Password"></div>
+      <button @click="switchVisibility">SH</button>
+    </div>
+    <button class="submit-button" @click="login">Log in</button>
+    <div>Not a user yet? <a href="#/register">Register here!</a></div>
   </div>
-
-
-  <!-- <p>Username: {{ message }}</p>
-  <input v-model="message" placeholder="Your username here" class="input_box" />
-  <p>Password:</p>
-  <input type="password" ref="passwordField" placeholder="Password">
-  <button @click="switchVisibility">show / hide</button>
-  <button @click="toHomePage">Log in</button>
-  <p>Not a user yet?</p>
-  <button @click="toRegisterPage">Register</button> -->
 </template> 
+
+<style>
+
+.container {
+  text-align: center;
+  width: 30rem;
+  margin: auto;
+}
+input {
+  width: 100%;
+}
+.password-field {
+  position: relative;
+}
+.password-field button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+}
+.submit-button {
+  margin: 1rem 0;
+}
+</style>

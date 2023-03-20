@@ -3,10 +3,10 @@
 </script>
 
 <template>
-    <div class="fixed top-0 left-0 right-0 bottom-0 z-50 bg-gray-800 flex items-center justify-center"> <!-- WHY NO WORK CSS (ALLAH PLS HELP ME!) -->
+    <div class="fixed top-0 left-0 right-0 bottom-0 z-50 bg-gray-800 flex items-center justify-center">
         <div class="bg-white p-32">
             <slot />
-            <button class="Notifications-close"> Close </button>
+            <button> Close </button>
         </div>
     </div>
 

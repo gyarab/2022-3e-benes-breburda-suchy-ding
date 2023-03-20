@@ -16,11 +16,13 @@ function switchVisibility(){
 }
 
 function passwordMatch(){
-  showError.value = passwordField1.value !== passwordField2.value
-  if (passwordField1.value !== passwordField2.value) {
-    notify({title: "password mismatch", type: "error"})
+    showError.value = passwordField1.value !== passwordField2.value
+    if (passwordField1.value !== "") {
+      if (passwordField1.value !== passwordField2.value) {
+        notify({title: "password mismatch", type: "error"})
+      } else {window.location.hash = '#/'}
+    }
   }
-}
 
 </script>
 <template>

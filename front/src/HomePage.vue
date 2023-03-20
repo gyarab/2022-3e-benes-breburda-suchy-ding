@@ -6,12 +6,17 @@
     <button @click="() => ToggleNotif('buttonTrigger')">Open Popup</button>
 
     <NotificationsPage v-if="notificationsTriggers.buttonTrigger">
-        <h2>Notif</h2>
+        
     </NotificationsPage>
+
+    <p>{{store.user.username}}</p>
+    
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import NotificationsPage from './NotificationsPage.vue';
+import store from './store';
 
 const notificationsTriggers = ref({
     buttonTrigger: false
