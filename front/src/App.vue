@@ -8,7 +8,6 @@ import Post from './PostPage.vue'
 
 
 
-
 const routes = {
   '/': Home,
   '/login': LogIn,
@@ -46,6 +45,7 @@ const currentView = computed(() => {
 <style>
 @import url('https://fonts.googleapis.com/css?family=Manjari');
 
+
 #app {
   font-family: Manjari;
   -webkit-font-smoothing: antialiased;
@@ -78,6 +78,7 @@ input {
   -webkit-text-fill-color: rgb(255, 255, 255);
   font-family: Manjari;
   border: none;
+  font-size: 1.25rem;
 
   @apply bg-[#222230]
 }

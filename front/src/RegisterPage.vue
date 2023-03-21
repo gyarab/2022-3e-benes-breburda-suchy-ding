@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { notify } from '@kyvg/vue3-notification'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
+
 
 const passwordField1 = ref("")
 const passwordField2 = ref("")
@@ -8,8 +10,7 @@ const email = ref("")
 const username = ref("")
 let showError = ref(false)
 const showPassword = ref(false)
-
-
+const whichIcon = ref(false);
 
 function switchVisibility(){
   showPassword.value = !showPassword.value;
@@ -24,29 +25,62 @@ function passwordMatch(){
     }
   }
 
+  function switchIcon() {
+  whichIcon.value = !whichIcon.value;
+}
+
 </script>
 <template>
-    <div class="grid grid-rows-9 gap-y-10">
-      <div> <p class="">Username: </p> </div>
-      <div> <input v-model="username" placeholder="Your username here" /> </div>
-      <div> <p>Email: </p> </div>
-      <div> <input v-model="email" placeholder="Your email here" /> </div>
-      <div> <p>Password:</p> </div>
-      <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"> </div>
-      <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password"> </div>
-      <div> <button @click="switchVisibility">show / hide</button> </div>
-      <div> <button @click="passwordMatch">confirm</button> </div>
+    <div class="container">
+      <div> <input v-model="username" placeholder="Username" /> </div>
+      <div> <input v-model="email" placeholder="Email" /> </div>
+      <div class="password-field">
+        <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"> </div>
+        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
+        <EyeIcon class="icon" />
+      </button>
+      <button v-else @click="switchVisibility(); switchIcon();">
+        <EyeSlashIcon class="icon" />
+      </button>
+      </div>
+      <div class="password-field">
+        <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password"> </div>
+        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
+        <EyeIcon class="icon" />
+      </button>
+      <button v-else @click="switchVisibility(); switchIcon();">
+        <EyeSlashIcon class="icon" />
+      </button>
+      </div>
+      <button class="submit-button" @click="passwordMatch">Confirm</button>
     </div>
-
-
-
-    <!-- <p class="">Username: </p>
-    <input v-model="username" placeholder="Your username here" />
-    <p>Email: </p>
-    <input v-model="email" placeholder="Your email here" />
-    <p>Password:</p>
-    <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password">
-    <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password">
-    <button @click="switchVisibility">show / hide</button>
-    <button @click="passwordMatch">confirm</button> -->
 </template>
+
+<style>
+
+.container {
+  text-align: center;
+  width: 30rem;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+}
+
+.submit-button {
+  margin: 1rem 0;
+} 
+
+</style>
