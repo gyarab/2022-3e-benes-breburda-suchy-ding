@@ -1,7 +1,7 @@
 <template>
 
     <div class="userContainer">
-        <button class="profilePic">
+        <button class="profilePic" @click="toProfile">
             <UserIcon class="userIcon" />
         </button>
         <p class="username">{{store.user.username}}</p>
@@ -26,6 +26,9 @@
 import store from './store';
 import { UserIcon } from '@heroicons/vue/20/solid'
 
+function toProfile() {
+  window.location.hash = '#/profile'
+}
 
 // const notificationsTriggers = ref({
 //     buttonTrigger: false
