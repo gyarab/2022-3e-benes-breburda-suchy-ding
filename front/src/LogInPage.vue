@@ -26,14 +26,14 @@ function switchVisibility(){
 
 <template>
   <div class="container">
-    <div><input v-model="username" placeholder="Username"></div>
+    <input v-model="username" placeholder="Username">
     <div class="password-field">
-      <div> <input :type="showPassword ? 'text' : 'password'" placeholder="Password"></div>
+      <input :type="showPassword ? 'text' : 'password'" placeholder="Password">
       <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
-        <EyeIcon class="icon" />
+        <EyeIcon class="eyeIcon" />
       </button>
       <button v-else @click="switchVisibility(); switchIcon();">
-        <EyeSlashIcon class="icon" />
+        <EyeSlashIcon class="eyeIcon" />
       </button>
     </div>
     <button class="submit-button" @click="login">Log in</button>
@@ -68,7 +68,7 @@ input {
   margin: 1rem 0;
 }
 
-.icon {
+.eyeIcon {
   width: 20px;
   margin: -0.45rem 0;
 }
