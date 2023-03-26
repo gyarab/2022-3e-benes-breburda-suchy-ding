@@ -5,6 +5,7 @@ import LogIn from './LogInPage.vue'
 import Register from './RegisterPage.vue'
 import Profile from './ProfilePage.vue'
 import Post from './PostPage.vue'
+import ProfileSetUp from './ProfileSetUp.vue'
 
 
 
@@ -13,7 +14,8 @@ const routes = {
   '/login': LogIn,
   '/register': Register,
   '/profile': Profile,
-  '/post': Post
+  '/post': Post,
+  '/profilesetup': ProfileSetUp
 
 
 }
@@ -36,6 +38,7 @@ const currentView = computed(() => {
   <a href="#/register">Register</a>
   <a href="#/profile">Profile</a>
   <a href="#/post">Post</a>
+  <a href="#/profilesetup">ProfileSetUp</a>
 
 
   <component :is="currentView" />
