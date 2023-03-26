@@ -16,8 +16,6 @@ const routes = {
   '/profile': Profile,
   '/post': Post,
   '/profilesetup': ProfileSetUp
-
-
 }
 
 const currentPath = ref(window.location.hash)
@@ -33,13 +31,14 @@ const currentView = computed(() => {
 
 <template>
   <!-- <NotificationsPage></NotificationsPage> -->
-  <a href="#/">Home</a>
-  <a href="#/login">Log in</a>
-  <a href="#/register">Register</a>
-  <a href="#/profile">Profile</a>
-  <a href="#/post">Post</a>
-  <a href="#/profilesetup">ProfileSetUp</a>
-
+  <div class="testing">
+    <a href="#/">Home</a>
+    <a href="#/login">Log in</a>
+    <a href="#/register">Register</a>
+    <a href="#/profile">Profile</a>
+    <a href="#/post">Post</a>
+    <a href="#/profilesetup">ProfileSetUp</a>
+  </div>
 
   <component :is="currentView" />
 </template> 
@@ -84,6 +83,14 @@ input {
   font-size: 1.25rem;
 
   @apply bg-[#222230]
+}
+
+.testing {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
 }
 
 </style>

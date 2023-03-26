@@ -1,8 +1,8 @@
 <script setup>
 
-const input = document.querySelector("input")
-const output = document.querySelector("output")
-let imagesArray = []
+// const input = document.querySelector("input")
+// const output = document.querySelector("output")
+// let imagesArray = []
 
 </script>
 
