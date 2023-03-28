@@ -1,10 +1,11 @@
 <script setup>
+import store from './store'
 </script>
 
 <template>
-    <h1>Profile Page</h1>
+    <h1 class="text-xl font-bold">Profile Page</h1>
     
-    <p>Profile Pic(?)</p>
+    <p>{{ store.user.username }}</p>
     <p>Listener, Listening, PostAmount count</p>
     <p>Audio Bio?</p>
     <p>Listen button</p>

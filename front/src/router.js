@@ -3,10 +3,9 @@ import store from './store.js';
 
 import Home from './HomePage.vue'
 import LogIn from './LogInPage.vue'
-// import Register from './RegisterPage.vue'
-// import Profile from './ProfilePage.vue'
-// import Post from './PostPage.vue'
-// import ProfileSetUp from './ProfileSetUp.vue'
+import Register from './RegisterPage.vue'
+import Profile from './ProfilePage.vue'
+import ProfileSetUp from './ProfileSetUp.vue'
 
 function loggedIn() {
   return store.loggedIn === true;
@@ -28,6 +27,35 @@ const router = createRouter({
     component: LogIn,
     meta: {
       title: 'Log in',
+    },
+    beforeEnter: () => {
+      if (loggedIn()) return { path: '/' };
+    },
+  }, {
+    path: '/register',
+    name: 'register',
+    component: Register,
+    meta: {
+      title: 'Sign up',
+    },
+    beforeEnter: () => {
+      if (loggedIn()) return { path: '/' };
+    },
+  }, {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
+    meta: {
+      title: 'My profile',
+      requiresLogin: true,
+    }
+  }, {
+    path: '/settings',
+    name: 'settings',
+    component: ProfileSetUp,
+    meta: {
+      title: 'Settings',
+      requiresLogin: true,
     }
   }],
 });

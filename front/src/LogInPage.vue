@@ -41,17 +41,12 @@ function switchVisibility(){
         </button>
       </div>
       <button class="submit-button" @click="login">Log in</button>
-      <div>Not a user yet? <RouterLink to="/register">Register here!</RouterLink></div>
+      <div>Not a user yet? <RouterLink class="register" to="/register">Register here!</RouterLink></div>
     </div>
   </div>
 </template> 
 
 <style>
-
-.login-container {
-  text-align: center;
-  width: 30rem;
-}
 
 input {
   width: 100%;
@@ -77,4 +72,7 @@ input {
   margin: -0.45rem 0;
 }
 
+.register {
+  text-decoration: underline;
+}
 </style>

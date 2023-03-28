@@ -1,50 +1,26 @@
-<template>
-
-    <div class="userContainer">
-        <button class="profilePic" @click="toProfile">
-            <UserIcon class="userIcon" />
-        </button>
-        <p class="username">{{store.user.username}}</p>
-    </div>
-
-    <h1>Home Page</h1>
-
-
-    <!-- UNFINISHED NOTIFICATION... -->
-
-    <!-- <button @click="() => ToggleNotif('buttonTrigger')">Open Popup</button>
-
-    <NotificationsPage v-if="notificationsTriggers.buttonTrigger">
-        
-    </NotificationsPage> -->
-    
-</template>
-
 <script setup>
-// import { ref } from 'vue';
-// import NotificationsPage from './NotificationsPage.vue';
 import store from './store';
 import { UserIcon } from '@heroicons/vue/20/solid'
-import { useRouter } from 'vue-router';
-const router = useRouter();
-
-function toProfile() {
-  router.push({ path: '/profile' });
-}
-
-// const notificationsTriggers = ref({
-//     buttonTrigger: false
-// });
-
-// const ToggleNotif = (trigger) => {
-//     notificationsTriggers.value[trigger] = !notificationsTriggers.value[trigger]
-// }
-
 </script>
 
+<template>
+
+    <div class="flex">
+        <div class="w-1/4">
+            <div class="userContainer">
+                <button class="profilePic" @click="$router.push({ path: '/profile' })">
+                    <UserIcon class="userIcon" />
+                </button>
+                <p class="username">{{store.user.username}}</p>
+            </div>
+        </div>
+        <div class="w-1/2">feed</div>
+        <div class="w-1/4">sidebar</div>
+    </div>
+    <h1>Home Page</h1>
+</template>
+
 <style>
-
-
 .userContainer{
   border-radius: 50px;
   display: inline-flex;
@@ -81,5 +57,4 @@ function toProfile() {
   margin-left: -21px;
   margin-top: -4px;
 }
-
 </style>
