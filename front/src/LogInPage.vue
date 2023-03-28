@@ -25,28 +25,29 @@ function switchVisibility(){
 </script>
 
 <template>
-  <div class="container">
-    <input v-model="username" placeholder="Username">
-    <div class="password-field">
-      <input :type="showPassword ? 'text' : 'password'" placeholder="Password">
-      <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
-        <EyeIcon class="eyeIcon" />
-      </button>
-      <button v-else @click="switchVisibility(); switchIcon();">
-        <EyeSlashIcon class="eyeIcon" />
-      </button>
+  <div class="flex h-screen items-center justify-center">
+    <div>
+      <input v-model="username" placeholder="Username">
+      <div class="password-field">
+        <input :type="showPassword ? 'text' : 'password'" placeholder="Password">
+        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
+          <EyeIcon class="eyeIcon" />
+        </button>
+        <button v-else @click="switchVisibility(); switchIcon();">
+          <EyeSlashIcon class="eyeIcon" />
+        </button>
+      </div>
+      <button class="submit-button" @click="login">Log in</button>
+      <div>Not a user yet? <a href="#/register">Register here!</a></div>
     </div>
-    <button class="submit-button" @click="login">Log in</button>
-    <div>Not a user yet? <a href="#/register">Register here!</a></div>
   </div>
 </template> 
 
 <style>
 
-.container {
+.login-container {
   text-align: center;
   width: 30rem;
-  margin: auto;
 }
 
 input {

@@ -7,8 +7,6 @@ import Profile from './ProfilePage.vue'
 import Post from './PostPage.vue'
 import ProfileSetUp from './ProfileSetUp.vue'
 
-
-
 const routes = {
   '/': Home,
   '/login': LogIn,
@@ -20,17 +18,19 @@ const routes = {
 
 const currentPath = ref(window.location.hash)
 
-window.addEventListener('hashchange', () => {
+window.addEventListener('hashchange', e => {
+  e.preventDefault();
   currentPath.value = window.location.hash
-})
+});
 
 const currentView = computed(() => {
   return routes[currentPath.value.slice(1) || '/']
-})
+});
 </script>
 
 <template>
-  <!-- <NotificationsPage></NotificationsPage> -->
+  <component :is="currentView" />
+
   <div class="testing">
     <a href="#/">Home</a>
     <a href="#/login">Log in</a>
@@ -39,8 +39,6 @@ const currentView = computed(() => {
     <a href="#/post">Post</a>
     <a href="#/profilesetup">ProfileSetUp</a>
   </div>
-
-  <component :is="currentView" />
 </template> 
 
 
@@ -53,7 +51,6 @@ const currentView = computed(() => {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
-  margin-top: 60px;
 }
 
 body {
