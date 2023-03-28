@@ -37,19 +37,19 @@ function passwordMatch(){
       <div class="password-field">
         <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"> </div>
         <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
-        <EyeIcon class="icon" />
+        <EyeIcon class="eyeIcon" />
       </button>
       <button v-else @click="switchVisibility(); switchIcon();">
-        <EyeSlashIcon class="icon" />
+        <EyeSlashIcon class="eyeIcon" />
       </button>
       </div>
       <div class="password-field">
         <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password"> </div>
         <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
-        <EyeIcon class="icon" />
+        <EyeIcon class="eyeIcon" />
       </button>
       <button v-else @click="switchVisibility(); switchIcon();">
-        <EyeSlashIcon class="icon" />
+        <EyeSlashIcon class="eyeIcon" />
       </button>
       </div>
       <button class="submit-button" @click="passwordMatch">Confirm</button>
