@@ -21,7 +21,7 @@ function passwordMatch(){
     if (passwordField1.value !== "") {
       if (passwordField1.value !== passwordField2.value) {
         notify({title: "password mismatch", type: "error"})
-      } else {window.location.hash = '#/'}
+      } else {window.location.hash = '#/profilesetup'}
     }
   }
 
