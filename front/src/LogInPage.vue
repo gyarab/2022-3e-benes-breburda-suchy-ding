@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import store from './store'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const username = ref('')
 const showPassword = ref(false)
 const whichIcon = ref(false);
@@ -11,7 +13,8 @@ function login() {
   store.user = {
     username: username.value,
   }
-  window.location.hash = '#/'
+  store.loggedIn = true;
+  router.push({ path: '/' })
 }
 
 function switchIcon() {
@@ -38,7 +41,7 @@ function switchVisibility(){
         </button>
       </div>
       <button class="submit-button" @click="login">Log in</button>
-      <div>Not a user yet? <a href="#/register">Register here!</a></div>
+      <div>Not a user yet? <RouterLink to="/register">Register here!</RouterLink></div>
     </div>
   </div>
 </template> 

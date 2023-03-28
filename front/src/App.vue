@@ -1,43 +1,16 @@
 <script setup>
-import { ref, computed } from 'vue'
-import Home from './HomePage.vue'
-import LogIn from './LogInPage.vue'
-import Register from './RegisterPage.vue'
-import Profile from './ProfilePage.vue'
-import Post from './PostPage.vue'
-import ProfileSetUp from './ProfileSetUp.vue'
-
-const routes = {
-  '/': Home,
-  '/login': LogIn,
-  '/register': Register,
-  '/profile': Profile,
-  '/post': Post,
-  '/profilesetup': ProfileSetUp
-}
-
-const currentPath = ref(window.location.hash)
-
-window.addEventListener('hashchange', e => {
-  e.preventDefault();
-  currentPath.value = window.location.hash
-});
-
-const currentView = computed(() => {
-  return routes[currentPath.value.slice(1) || '/']
-});
 </script>
 
 <template>
-  <component :is="currentView" />
+  <RouterView></RouterView>
 
   <div class="testing">
-    <a href="#/">Home</a>
-    <a href="#/login">Log in</a>
-    <a href="#/register">Register</a>
-    <a href="#/profile">Profile</a>
-    <a href="#/post">Post</a>
-    <a href="#/profilesetup">ProfileSetUp</a>
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/login">Log in</RouterLink>
+    <RouterLink to="/register">Register</RouterLink>
+    <RouterLink to="/profile">Profile</RouterLink>
+    <RouterLink to="/post">Post</RouterLink>
+    <RouterLink to="/profilesetup">ProfileSetUp</RouterLink>
   </div>
 </template> 
 

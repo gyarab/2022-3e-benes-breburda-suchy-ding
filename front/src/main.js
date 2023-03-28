@@ -3,8 +3,10 @@ import { createApp } from 'vue'
 // base styles & tailwind css
 import "./style.css"
 
-// main App
+import router from './router.js'
 import App from './App.vue'
 
 const app = createApp(App)
+
+app.use(router)
 app.mount('#app')

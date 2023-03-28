@@ -25,9 +25,11 @@
 // import NotificationsPage from './NotificationsPage.vue';
 import store from './store';
 import { UserIcon } from '@heroicons/vue/20/solid'
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 function toProfile() {
-  window.location.hash = '#/profile'
+  router.push({ path: '/profile' });
 }
 
 // const notificationsTriggers = ref({
