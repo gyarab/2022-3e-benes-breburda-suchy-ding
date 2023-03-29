@@ -7,7 +7,6 @@
     <RouterLink to="/register">Register</RouterLink>
     <RouterLink to="/profile">Profile</RouterLink>
     <RouterLink to="/post">Post</RouterLink>
-    <RouterLink to="/profilesetup">ProfileSetUp</RouterLink>
   </div>
 </template> 
 

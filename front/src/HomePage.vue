@@ -1,35 +1,66 @@
 <script setup>
 import store from './store';
-import { UserIcon } from '@heroicons/vue/20/solid'
+import { UserIcon, SignalIcon } from '@heroicons/vue/20/solid'
+import { BellIcon,Cog8ToothIcon } from '@heroicons/vue/24/outline'
+
+
 </script>
 
 <template>
 
     <div class="flex">
-        <div class="w-1/4">
+        <div class="flex flex-col w-1/4 items-center">
+          <div>
             <div class="userContainer">
                 <button class="profilePic" @click="$router.push({ path: '/profile' })">
                     <UserIcon class="userIcon" />
                 </button>
                 <p class="username">{{store.user.username}}</p>
             </div>
+              <button class="newpostButton flex block items-center justify-center w-64 m-2">
+                <SignalIcon class="h-10 mr-2"/>
+                <div>
+                  New Post
+                </div>
+              </button>
+              <button class="sidebarButton flex block w-64 items-center m-2">
+                <BellIcon class="h-6 mr-2"/>
+                <div>
+                  Notifications
+                </div> 
+              </button>
+              <button class="sidebarButton flex block w-64 items-center m-2">
+                <Cog8ToothIcon class="h-6 mr-2"/>
+                <div>
+                  Settings
+                </div> 
+              </button>
+          </div>
         </div>
         <div class="w-1/2">feed</div>
         <div class="w-1/4">sidebar</div>
     </div>
-    <h1>Home Page</h1>
 </template>
 
 <style>
+
+.newpostButton{
+  background-color: #028090;
+  border: none;
+}
+
+.sidebarButton{
+  background: none;
+  border: none;
+}
+
 .userContainer{
   border-radius: 50px;
-  display: inline-flex;
+  display: flex;
   text-align: center;
   width: 15rem;
   margin: auto;
   padding: 10px;
-  background-color: #222230;
-  position: relative;
 }
 
 .profilePic {
