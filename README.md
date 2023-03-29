@@ -1,5 +1,9 @@
 <h3 align="center">Ding - audiosociální síť</h3>
 
+<p align="center"><b><a href="https://gyarab.github.io/2022-3e-benes-breburda-suchy-ding/main.pdf">Online PDF dokumentace</a></b></p>
+
+[![Build documentation status](https://github.com/gyarab/2022-3e-benes-breburda-suchy-ding/actions/workflows/build-docs.yml/badge.svg)](https://github.com/gyarab/2022-3e-benes-breburda-suchy-ding/actions/workflows/build-docs.yml)
+
 Zadání:
 > Cílem by bylo vytvořit sociální síť, na kterou by se nedalo 
 > přidat nic jiného než zvukové soubory, které by nesměly obsahovat
