@@ -12,11 +12,11 @@
 
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Manjari');
+@import url('https://fonts.googleapis.com/css?family=Inter');
 
 
 #app {
-  font-family: sans-serif;
+  font-family: Inter;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
