@@ -16,7 +16,7 @@
 
 
 #app {
-  font-family: Manjari;
+  font-family: sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
@@ -29,7 +29,6 @@ body {
 button {
   padding: 0.75rem 1.5rem;
   border: 2px solid #20201E;
-  font-family: Manjari;
 
   @apply bg-[#222230] rounded-3xl text-white hover:bg-[#303044]
 }
@@ -44,7 +43,6 @@ input {
   margin: 8px 0;
   border-radius: 25px;
   -webkit-text-fill-color: rgb(255, 255, 255);
-  font-family: Manjari;
   border: none;
   font-size: 1.25rem;
 
