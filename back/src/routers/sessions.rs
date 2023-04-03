@@ -1,20 +1,21 @@
 use crate::{
     models::{ClientError, Session, User},
-    security,
+    security, utils::resp,
 };
 use serde::Deserialize;
 use sqlx::PgPool;
+use tide::http::Cookie;
 use crate::state::{WebState, StateWithDb as _};
 
 pub async fn create_session(mut req: tide::Request<WebState>) -> tide::Result {
     #[derive(Deserialize)]
     struct ReqBody {
-        name: String,
+        email: String,
         password: String,
     }
     let body: ReqBody = req.body_json().await?;
 
-    let user = sqlx::query_as!(User, "SELECT * FROM users WHERE name = $1;", &body.name)
+    let user = sqlx::query_as!(User, "SELECT * FROM users WHERE email = $1;", &body.email)
         .fetch_optional(req.state().db())
         .await?;
     match user {
@@ -35,7 +36,9 @@ pub async fn create_session(mut req: tide::Request<WebState>) -> tide::Result {
             .fetch_one(req.state().db())
             .await?;
 
-            Ok(tide::Body::from_json(&res)?.try_into()?)
+            let mut resp = resp(200, &res)?;
+            resp.insert_cookie(Cookie::new("session_ding", res.token));
+            Ok(resp)
         }
     }
 }

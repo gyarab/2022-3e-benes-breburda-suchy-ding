@@ -3,15 +3,37 @@ mod routers;
 mod security;
 mod state;
 mod config;
+mod utils;
 use sqlx::postgres::PgPoolOptions;
 use tide::prelude::json;
+use validator::ValidationErrors;
 use std::env;
 use async_std::fs::File;
 use tide::log;
 use tide::Request;
 
 async fn demo(mut _req: Request<()>) -> tide::Result {
-    Ok("hello world".into())
+    Ok("Ding API".into())
+}
+
+async fn error_handler(mut res: tide::Response) -> tide::Result {
+    if let Some(err) = res.downcast_error::<models::ClientError>() {
+        let status = err.status_code;
+        res.set_body(json!({
+            "code": err.code,
+            "message": err.message,
+        }));
+        res.set_status(status);
+    }
+    if let Some(err) = res.downcast_error::<ValidationErrors>() {
+        res.set_body(json!({
+            "code": "asdf",
+            "message": "sdafsdf",
+            "errors": err
+        }));
+        res.set_status(422);
+    }
+    Ok(res)
 }
 
 #[async_std::main]
@@ -30,24 +52,15 @@ async fn main() -> tide::Result<()> {
 
     let mut app = tide::new();
 
-    app.with(tide::utils::After(|mut res: tide::Response| async {
-        if let Some(err) = res.downcast_error::<models::ClientError>() {
-            let code = err.code.to_owned();
-            let message = err.message.to_owned();
-            res.set_status(err.status_code);
-            res.set_body(json!({
-                "code": code,
-                "message": message,
-            }));
-        }
-        Ok(res)
-    }));
+    app.with(tide::utils::After(error_handler));
 
     app.at("/").get(demo);
     app.at("/api/users")
         .nest(routers::users::get_router(pool.clone()).await);
     app.at("/api/sessions")
         .nest(routers::sessions::get_router(pool.clone()).await);
+
     app.listen(format!("{}:{}", config.host, config.port)).await?;
+
     Ok(())
 }

@@ -1,5 +1,6 @@
 use anyhow::anyhow;
 use sqlx::PgPool;
+use tide::prelude::json;
 use std::{num::NonZeroU32, future::Future, pin::Pin};
 use ring::{
     digest, pbkdf2,
@@ -7,7 +8,7 @@ use ring::{
 };
 use base64::{Engine as _, engine::general_purpose as base64_coder};
 
-use crate::state::StateWithDb;
+use crate::{state::StateWithDb, utils::resp, models::ClientError};
 use crate::models::User;
 
 #[derive(Clone)]
@@ -89,26 +90,41 @@ pub async fn create_token(bytes: usize) -> anyhow::Result<String> {
     .await
 }
 
-pub async fn check_token(db: &PgPool, token: &str) -> bool {
+pub async fn user_from_token(db: &PgPool, token: &str) -> anyhow::Result<Option<User>> {
     let session = sqlx::query_as!(User, "
         SELECT users.*
         FROM users
         JOIN sessions ON users.user_id = sessions.user_id
         WHERE sessions.token = $1
-    ", token);
-    false
+    ", token).fetch_optional(db).await?;
+    Ok(session)
 }
 
-fn session_guard<'a, T: Clone + Send + Sync + StateWithDb + 'static>(
+pub fn session_guard<'a, T: Clone + Send + Sync + StateWithDb + 'static>(
     mut request: tide::Request<T>,
     next: tide::Next<'a, T>,
 ) -> Pin<Box<dyn Future<Output = tide::Result> + Send + 'a>> {
     Box::pin(async {
         let cookie = request.cookie("session_ding");
-        if cookie.is_none() || !check_token(request.state().db(), cookie.unwrap().value()).await {
-            Ok(tide::Response::new(tide::StatusCode::Unauthorized))
-        } else {
-            Ok(next.run(request).await)
+
+        if cookie.is_none() {
+            return Err(ClientError::new(401, "missing_cookie", "Missing authorization cookie").into());
+        }
+
+        let user = user_from_token(request.state().db(), cookie.unwrap().value()).await;
+
+        match user {
+            Ok(Some(user)) => {
+                request.set_ext(user);
+                Ok(next.run(request).await)
+            },
+            Ok(None) => {
+                Err(ClientError::new(401, "invalid_cookie", "Authorization cookie is invalid").into())
+            }
+            Err(e) => {
+                tide::log::error!("user_from_token error: {}", e);
+                resp(500, &json!({"error": "db"}))
+            }
         }
     })
 }

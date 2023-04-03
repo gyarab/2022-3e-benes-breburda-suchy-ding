@@ -5,12 +5,28 @@ use anyhow::anyhow;
 use std::fmt;
 use std::error::Error;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct User {
     pub user_id: Uuid,
     pub name: String,
     pub email: String,
     pub password: String,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct UserPub {
+    pub user_id: Uuid,
+    pub name: String,
+    pub email: String,
+}
+impl From<User> for UserPub {
+    fn from(u: User) -> Self {
+        Self {
+            user_id: u.user_id,
+            name: u.name,
+            email: u.email,
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize)]
