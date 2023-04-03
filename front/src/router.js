@@ -5,6 +5,8 @@ import Home from './HomePage.vue'
 import LogIn from './LogInPage.vue'
 import Register from './RegisterPage.vue'
 import Profile from './ProfilePage.vue'
+import Settings from './SettingsPage.vue'
+
 
 function loggedIn() {
   return store.loggedIn === true;
@@ -48,7 +50,15 @@ const router = createRouter({
       title: 'My profile',
       requiresLogin: true,
     }
-  },],
+  }, {
+    path: '/settings',
+    name: 'settings',
+    component: Settings,
+    meta: {
+      title: 'Settings',
+      requiresLogin: true,
+    }
+  }],
 });
 
 router.beforeResolve(async to => {

@@ -33,7 +33,7 @@ const search = ref('')
           </div> 
         </button>
 
-        <button class="sidebarButton flex block w-64 items-center m-2">
+        <button @click="$router.push({ path: '/settings' })" class="sidebarButton flex block w-64 items-center m-2">
           <Cog8ToothIcon class="h-6 mr-2"/>
           <div>
             Settings
