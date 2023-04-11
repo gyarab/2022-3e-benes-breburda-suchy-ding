@@ -42,7 +42,7 @@ pub async fn create_session(mut req: tide::Request<WebState>) -> tide::Result {
         }
     }
 }
-/// to be mounted at /users
+/// to be mounted at /sessions
 pub async fn get_router(pool: Box<PgPool>) -> tide::Server<WebState> {
     let mut app = tide::with_state(WebState { pool });
     app.at("/").post(create_session);

@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use tide::prelude::*;
-use anyhow::anyhow;
 use std::fmt;
 use std::error::Error;
 
@@ -11,6 +9,7 @@ pub struct User {
     pub name: String,
     pub email: String,
     pub password: String,
+    pub email_verified: bool,
 }
 
 #[derive(Deserialize, Serialize)]

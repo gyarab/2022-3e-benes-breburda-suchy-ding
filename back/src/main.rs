@@ -4,6 +4,9 @@ mod security;
 mod state;
 mod config;
 mod utils;
+use lettre::AsyncSmtpTransport;
+use lettre::AsyncStd1Executor;
+use lettre::transport::smtp::authentication::Credentials;
 use sqlx::postgres::PgPoolOptions;
 use tide::prelude::json;
 use validator::ValidationErrors;
@@ -36,6 +39,7 @@ async fn error_handler(mut res: tide::Response) -> tide::Result {
     Ok(res)
 }
 
+
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     log::start();
@@ -50,13 +54,18 @@ async fn main() -> tide::Result<()> {
             .await?,
     ); 
 
+    let smtp: AsyncSmtpTransport<AsyncStd1Executor> = AsyncSmtpTransport::<AsyncStd1Executor>::relay(&config.smtp_host)
+        .unwrap()
+        .credentials(Credentials::new(config.smtp_username, config.smtp_password))
+        .build();
+
     let mut app = tide::new();
 
     app.with(tide::utils::After(error_handler));
 
     app.at("/").get(demo);
     app.at("/api/users")
-        .nest(routers::users::get_router(pool.clone()).await);
+        .nest(routers::users::get_router(pool.clone(), Box::new(smtp)).await);
     app.at("/api/sessions")
         .nest(routers::sessions::get_router(pool.clone()).await);
 

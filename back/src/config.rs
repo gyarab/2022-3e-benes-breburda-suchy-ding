@@ -7,6 +7,9 @@ pub struct Config {
     pub database_url: String,
     pub host: String,
     pub port: u16,
+    pub smtp_host: String,
+    pub smtp_username: String,
+    pub smtp_password: String,
 }
 
 impl Config {

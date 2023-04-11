@@ -28,7 +28,7 @@ impl From<&str> for PasswordHasherSpec {
                 credential_length: digest::SHA512_OUTPUT_LEN,
                 pbkdf2_iterations: NonZeroU32::new(100_000).unwrap(),
             },
-            e => panic!("invalid hashing algorithm: {}", val),
+            e => panic!("invalid hashing algorithm: {}", e),
         }
     }
 }
