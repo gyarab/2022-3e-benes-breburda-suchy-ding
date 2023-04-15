@@ -2,14 +2,14 @@
 import store from './store';
 import { ref } from 'vue'
 import { SignalIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { BellIcon, Cog8ToothIcon, UserCircleIcon} from '@heroicons/vue/24/outline'
+import { BellIcon, Cog8ToothIcon, UserCircleIcon, PlayCircleIcon } from '@heroicons/vue/24/outline'
 
 const search = ref('')
 
 </script>
 
 <template>
-  <div class="flex">
+  <div class="flex h-screen">
     <div class="flex flex-col w-1/4 items-center">
       <div>
         <button class="userContainer flex block items-center w-64 m-2">
@@ -49,12 +49,23 @@ const search = ref('')
           <input v-model="search" placeholder="Search" class="h-12 bg-transparent -ml-8 focus:outline-none">
         </div>
       </div>
-      <div class="flex border-2 rounded-3xl border-[#1D1D2A] mt-4 w-full items-center justify-center">
-        Main Feed
+      <div class="flex flex-col border-2 rounded-3xl border-[#1D1D2A] my-4 w-full justify-center h-full">
+        <div class="flex border-2 rounded-3xl border-[#1D1D2A] mx-2 mt-2 mb-1 h-1/2">
+          <div class="flex w-1/2 items-center justify-center">
+            <PlayCircleIcon class="h-12 text-[#1D1D2A]"/>
+          </div>
+        </div>
+        <div class="flex border-2 rounded-3xl border-[#1D1D2A] mx-2 mt-1 mb-2 h-1/2">
+          <div class="flex w-1/2 items-center justify-center">
+            <PlayCircleIcon class="h-12 text-[#1D1D2A]"/>
+          </div>
+        </div>
+        <!-- <div class="flex border-2 rounded-3xl border-[#1D1D2A] mx-2 mt-2 justify-center h-1/2">
+          Third Visible Post
+        </div> -->
       </div>
     </div>
-
-    <div class="flex w-1/4 mt-20 items-center justify-center border-2 rounded-3xl border-[#1D1D2A]">
+    <div class="flex w-1/4 mt-20 mb-4 items-center justify-center border-2 rounded-3xl border-[#1D1D2A]">
       Sidebar
     </div>
   </div>
