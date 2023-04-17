@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import store from './store'
+import { store } from './store'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
 import { useRouter } from 'vue-router'
 

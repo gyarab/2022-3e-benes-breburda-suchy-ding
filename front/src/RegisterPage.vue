@@ -2,7 +2,11 @@
 import { ref } from 'vue'
 import { notify } from '@kyvg/vue3-notification'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
+import rest from './rest'
+import { loadUserData } from './store'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 
 const passwordField1 = ref("")
 const passwordField2 = ref("")
@@ -17,43 +21,69 @@ function switchVisibility(){
 }
 
 function passwordMatch(){
-    showError.value = passwordField1.value !== passwordField2.value
-    if (passwordField1.value !== "") {
-      if (passwordField1.value !== passwordField2.value) {
-        notify({title: "password mismatch", type: "error"})
-      } else {window.location.hash = '#/profilesetup'}
+  showError.value = passwordField1.value !== passwordField2.value
+  if (passwordField1.value !== "") {
+    if (passwordField1.value !== passwordField2.value) {
+      notify({title: "password mismatch", type: "error"})
     }
   }
+  return showError.value;
+}
 
-  function switchIcon() {
+function switchIcon() {
   whichIcon.value = !whichIcon.value;
 }
 
+async function register() {
+  if (!passwordMatch()) return;
+  console.log('aaaaaaa');
+
+  const reg_response = await rest.post('/api/users', {
+    name: username.value,
+    email: email.value,
+    password: passwordField1.value,
+  });
+  console.log(reg_response);
+
+  if (reg_response.status == 200) {
+    const login_response = await rest.post('/api/sessions', {
+      email: email.value,
+      password: passwordField1.value,
+    });
+    console.log(login_response);
+    if (login_response.status == 200) {
+      await loadUserData();
+      router.push('/');
+    }
+  }
+}
+
 </script>
+
 <template>
-    <div class="container">
-      <div> <input v-model="username" placeholder="Username" /> </div>
-      <div> <input v-model="email" placeholder="Email" /> </div>
-      <div class="password-field">
-        <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"> </div>
-        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
-        <EyeIcon class="eyeIcon" />
-      </button>
-      <button v-else @click="switchVisibility(); switchIcon();">
-        <EyeSlashIcon class="eyeIcon" />
-      </button>
-      </div>
-      <div class="password-field">
-        <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password"> </div>
-        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
-        <EyeIcon class="eyeIcon" />
-      </button>
-      <button v-else @click="switchVisibility(); switchIcon();">
-        <EyeSlashIcon class="eyeIcon" />
-      </button>
-      </div>
-      <button class="submit-button" @click="passwordMatch">Confirm</button>
+  <div class="container">
+    <div> <input v-model="username" placeholder="Username" /> </div>
+    <div> <input v-model="email" placeholder="Email" /> </div>
+    <div class="password-field">
+      <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"> </div>
+      <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
+      <EyeIcon class="eyeIcon" />
+    </button>
+    <button v-else @click="switchVisibility(); switchIcon();">
+      <EyeSlashIcon class="eyeIcon" />
+    </button>
     </div>
+    <div class="password-field">
+      <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password"> </div>
+      <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
+      <EyeIcon class="eyeIcon" />
+    </button>
+    <button v-else @click="switchVisibility(); switchIcon();">
+      <EyeSlashIcon class="eyeIcon" />
+    </button>
+    </div>
+    <button class="submit-button" @click="register">Confirm</button>
+  </div>
 </template>
 
 <style>
