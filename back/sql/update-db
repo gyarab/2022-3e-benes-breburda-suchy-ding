@@ -78,7 +78,7 @@ psql_run() {
         echo "\\gset"
         echo "\\if :missing"
         echo "\\echo Applying $up"
-        echo "\\ir $up"
+        echo "\\i $up"
         echo
         echo "INSERT INTO schema_updates(filename) VALUES('$up');"
         echo "\\endif"
