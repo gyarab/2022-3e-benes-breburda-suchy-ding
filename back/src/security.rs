@@ -105,13 +105,13 @@ pub fn session_guard<'a, T: Clone + Send + Sync + StateWithDb + 'static>(
     next: tide::Next<'a, T>,
 ) -> Pin<Box<dyn Future<Output = tide::Result> + Send + 'a>> {
     Box::pin(async {
-        let cookie = request.cookie("session_ding");
+        let header = request.header("Authorization");
 
-        if cookie.is_none() {
-            return Err(ClientError::new(401, "missing_cookie", "Missing authorization cookie").into());
+        if header.is_none() {
+            return Err(ClientError::new(401, "missing_cookie", "Missing authorization header").into());
         }
 
-        let user = user_from_token(request.state().db(), cookie.unwrap().value()).await;
+        let user = user_from_token(request.state().db(), header.unwrap().last().as_str()).await;
 
         match user {
             Ok(Some(user)) => {

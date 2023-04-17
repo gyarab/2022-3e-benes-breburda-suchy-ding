@@ -4,7 +4,7 @@ use crate::{
 };
 use serde::Deserialize;
 use sqlx::PgPool;
-use tide::http::Cookie;
+use tide::http::{Cookie, cookies::SameSite};
 use crate::state::{WebState, StateWithDb as _};
 
 pub async fn create_session(mut req: tide::Request<WebState>) -> tide::Result {
@@ -36,9 +36,7 @@ pub async fn create_session(mut req: tide::Request<WebState>) -> tide::Result {
             .fetch_one(req.state().db())
             .await?;
 
-            let mut resp = resp(200, &res)?;
-            resp.insert_cookie(Cookie::new("session_ding", res.token));
-            Ok(resp)
+            resp(200, &res)
         }
     }
 }

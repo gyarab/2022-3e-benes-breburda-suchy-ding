@@ -39,6 +39,10 @@ async fn error_handler(mut res: tide::Response) -> tide::Result {
     Ok(res)
 }
 
+async fn cors(mut res: tide::Response) -> tide::Result {
+    res.append_header("Access-Control-Allow-Origin", "*");
+    Ok(res)
+}
 
 #[async_std::main]
 async fn main() -> tide::Result<()> {
@@ -62,6 +66,7 @@ async fn main() -> tide::Result<()> {
     let mut app = tide::new();
 
     app.with(tide::utils::After(error_handler));
+    app.with(tide::utils::After(cors));
 
     app.at("/").get(demo);
     app.at("/api/users")
