@@ -21,11 +21,9 @@ function switchVisibility(){
 }
 
 function passwordMatch(){
-  showError.value = passwordField1.value !== passwordField2.value
-  if (passwordField1.value !== "") {
-    if (passwordField1.value !== passwordField2.value) {
-      notify({title: "password mismatch", type: "error"})
-    }
+  showError.value = passwordField1.value && passwordField1.value === passwordField2.value
+  if (!showError.value) {
+    notify({title: "password mismatch", type: "error"})
   }
   return showError.value;
 }
@@ -36,7 +34,6 @@ function switchIcon() {
 
 async function register() {
   if (!passwordMatch()) return;
-  console.log('aaaaaaa');
 
   const reg_response = await rest.post('/api/users', {
     name: username.value,
@@ -52,6 +49,7 @@ async function register() {
     });
     console.log(login_response);
     if (login_response.status == 200) {
+      window.localStorage.setItem('api-key', login_response.body.token);
       await loadUserData();
       router.push('/');
     }

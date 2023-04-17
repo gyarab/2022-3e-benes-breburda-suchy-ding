@@ -16,7 +16,7 @@ const search = ref('')
         <button class="invisButton flex block items-center w-64 m-2">
           <UserCircleIcon class="h-10 mr-2"/>
           <div>
-            {{store.user.username}}
+            {{store.user.name}}
           </div>
         </button>
 

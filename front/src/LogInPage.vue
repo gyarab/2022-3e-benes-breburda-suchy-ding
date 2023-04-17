@@ -1,20 +1,27 @@
 <script setup>
 import { ref } from 'vue'
-import { store } from './store'
+import { loadUserData } from './store'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
 import { useRouter } from 'vue-router'
+import rest from './rest';
 
 const router = useRouter()
-const username = ref('')
+const email = ref('')
 const showPassword = ref(false)
 const whichIcon = ref(false);
+const password = ref('')
 
-function login() {
-  store.user = {
-    username: username.value,
+async function login() {
+  const resp = await rest.post('/api/sessions', {
+    email: email.value,
+    password: password.value,
+  });
+
+  if (resp.status == 200) {
+    window.localStorage.setItem('api-key', resp.body.token);
+    await loadUserData();
+    router.push({ path: '/' })
   }
-  store.loggedIn = true;
-  router.push({ path: '/' })
 }
 
 function switchIcon() {
@@ -30,9 +37,9 @@ function switchVisibility(){
 <template>
   <div class="flex h-screen items-center justify-center">
     <div>
-      <input v-model="username" placeholder="Username">
+      <input v-model="email" placeholder="Email">
       <div class="password-field">
-        <input :type="showPassword ? 'text' : 'password'" placeholder="Password">
+        <input :type="showPassword ? 'text' : 'password'" placeholder="Password" v-model="password">
         <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
           <EyeIcon class="eyeIcon" />
         </button>

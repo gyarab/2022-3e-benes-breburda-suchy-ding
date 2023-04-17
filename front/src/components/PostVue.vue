@@ -22,7 +22,7 @@ const openComments = ref(false)
                 <button class=" flex block invisButton w-full h-full items-center">
                   <UserCircleIcon class="h-14 mr-2"/>
                      <div>
-                      {{store.user.username}}
+                      {{store.user.name}}
                      </div>
                     </button>
                 </div>

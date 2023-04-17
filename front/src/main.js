@@ -9,7 +9,8 @@ import { loadUserData } from './store'
 
 const app = createApp(App)
 
-app.use(router)
-app.mount('#app')
+loadUserData().finally(() => {
+    app.use(router)
+    app.mount('#app')
+});
 
-loadUserData();
