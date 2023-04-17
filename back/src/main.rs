@@ -8,12 +8,15 @@ use lettre::AsyncSmtpTransport;
 use lettre::AsyncStd1Executor;
 use lettre::transport::smtp::authentication::Credentials;
 use sqlx::postgres::PgPoolOptions;
+use tide::http::Method;
 use tide::prelude::json;
 use validator::ValidationErrors;
 use std::env;
+use std::future::Future;
 use async_std::fs::File;
 use tide::log;
 use tide::Request;
+use std::pin::Pin;
 
 async fn demo(mut _req: Request<()>) -> tide::Result {
     Ok("Ding API".into())
@@ -44,6 +47,23 @@ async fn cors(mut res: tide::Response) -> tide::Result {
     Ok(res)
 }
 
+pub fn cors_preflight<'a>(
+    request: tide::Request<()>,
+    next: tide::Next<'a, ()>,
+) -> Pin<Box<dyn Future<Output = tide::Result> + Send + 'a>> {
+    Box::pin(async {
+        if request.method() == Method::Options {
+            let resp = tide::Response::builder(204)
+                .header("Access-Control-Allow-Methods", "*")
+                .header("Access-Control-Allow-Headers", "*")
+                .build();
+            Ok(resp)
+        } else {
+            Ok(next.run(request).await)
+        }
+    })
+}
+
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     log::start();
@@ -67,6 +87,7 @@ async fn main() -> tide::Result<()> {
 
     app.with(tide::utils::After(error_handler));
     app.with(tide::utils::After(cors));
+    app.with(cors_preflight);
 
     app.at("/").get(demo);
     app.at("/api/users")
