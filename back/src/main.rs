@@ -4,6 +4,7 @@ mod security;
 mod state;
 mod config;
 mod utils;
+mod mail;
 use lettre::AsyncSmtpTransport;
 use lettre::AsyncStd1Executor;
 use lettre::transport::smtp::authentication::Credentials;
@@ -78,10 +79,7 @@ async fn main() -> tide::Result<()> {
             .await?,
     ); 
 
-    let smtp: AsyncSmtpTransport<AsyncStd1Executor> = AsyncSmtpTransport::<AsyncStd1Executor>::relay(&config.smtp_host)
-        .unwrap()
-        .credentials(Credentials::new(config.smtp_username, config.smtp_password))
-        .build();
+    let mailer = mail::Mailer::new(&config.smtp_host, config.smtp_username, config.smtp_password, None);
 
     let mut app = tide::new();
 
@@ -91,7 +89,7 @@ async fn main() -> tide::Result<()> {
 
     app.at("/").get(demo);
     app.at("/api/users")
-        .nest(routers::users::get_router(pool.clone(), Box::new(smtp)).await);
+        .nest(routers::users::get_router(pool.clone(), Box::new(mailer)).await);
     app.at("/api/sessions")
         .nest(routers::sessions::get_router(pool.clone()).await);
 

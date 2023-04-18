@@ -1,35 +1,21 @@
+use crate::mail::Mailer;
 use crate::models::ClientError;
 use crate::models::User;
 use crate::models::UserPub;
 use crate::utils::resp;
-use lettre::AsyncSmtpTransport;
-use lettre::AsyncStd1Executor;
-use lettre::AsyncTransport;
-use lettre::Message;
 use sqlx::PgPool;
 use tide::prelude::*;
 use tide::Request;
 use validator::Validate;
 use crate::state::StateWithDb;
 use crate::security;
-use anyhow::anyhow;
-
-type SmtpExecutor = AsyncSmtpTransport<AsyncStd1Executor>;
 
 #[derive(Clone)]
 pub struct WebState {
     pub pool: Box<PgPool>,
-    pub smtp: Box<SmtpExecutor>,
+    pub mailer: Box<Mailer>,
 }
 
-impl WebState {
-    async fn send_mail(&self, msg: Message) -> anyhow::Result<()> {
-        match self.smtp.send(msg).await {
-            Ok(_) => Ok(()),
-            Err(e) => Err(anyhow!("failed to send email {}", e))
-        }
-    }
-}
 
 impl StateWithDb for WebState {
     fn db(&self) -> &PgPool {
@@ -75,6 +61,8 @@ async fn create_user(mut req: Request<WebState>) -> tide::Result {
         security::hash(&body.password).await?
     ).fetch_one(req.state().db()).await?;
 
+    // should be done after the request has been sent
+    req.state().mailer.send_mail(&body.email, "Thank you for registering", "Hello, thamks!".to_owned()).await?;
 
     resp(200, &UserPub::from(usr))
 }
@@ -93,8 +81,8 @@ async fn update_me(mut req: Request<WebState>) -> tide::Result {
     resp(200, &json!({}))
 }
 
-pub async fn get_router(pool: Box<PgPool>, smtp: Box<SmtpExecutor>) -> tide::Server<WebState> {
-    let mut app = tide::with_state(WebState { pool, smtp });
+pub async fn get_router(pool: Box<PgPool>, mailer: Box<Mailer>) -> tide::Server<WebState> {
+    let mut app = tide::with_state(WebState { pool, mailer });
 
     app.at("/me").with(security::session_guard).get(get_me);
     app.at("/").post(create_user);
