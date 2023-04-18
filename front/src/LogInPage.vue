@@ -40,10 +40,10 @@ function switchVisibility(){
       <input v-model="email" placeholder="Email">
       <div class="password-field">
         <input :type="showPassword ? 'text' : 'password'" placeholder="Password" v-model="password">
-        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();">
+        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
           <EyeIcon class="eyeIcon" />
         </button>
-        <button v-else @click="switchVisibility(); switchIcon();">
+        <button v-else @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
           <EyeSlashIcon class="eyeIcon" />
         </button>
       </div>
@@ -71,6 +71,8 @@ input {
 }
 
 .submit-button {
+  border: none;
+  transition-duration: 0.5s;
   margin: 1rem 0;
 }
 

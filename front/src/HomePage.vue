@@ -2,10 +2,15 @@
 import { store } from './store';
 import { ref } from 'vue'
 import { SignalIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { BellIcon, Cog8ToothIcon, UserCircleIcon } from '@heroicons/vue/24/outline'
+import { BellIcon, Cog8ToothIcon, UserCircleIcon, ArrowLeftCircleIcon } from '@heroicons/vue/24/outline'
 import PostVue from './components/PostVue.vue'
 
 const search = ref('')
+
+function logout() {
+  window.localStorage.removeItem('api-key');
+  location.reload();
+}
 
 </script>
 
@@ -27,17 +32,24 @@ const search = ref('')
           </div>
         </button>
 
-        <button class="sidebarButton flex block w-64 items-center m-2">
+        <button class="invisButton flex block w-64 items-center m-2">
           <BellIcon class="h-6 mr-2"/>
           <div>
             Notifications
           </div> 
         </button>
 
-        <button @click="$router.push({ path: '/settings' })" class="sidebarButton flex block w-64 items-center m-2">
+        <button @click="$router.push({ path: '/settings' })" class="invisButton flex block w-64 items-center m-2">
           <Cog8ToothIcon class="h-6 mr-2"/>
           <div>
             Settings
+          </div> 
+        </button>
+
+        <button @click="logout" class="invisButton flex block w-64 items-center m-2">
+          <ArrowLeftCircleIcon class="h-6 mr-2"/>
+          <div>
+            Log Out
           </div> 
         </button>
       </div>
@@ -50,8 +62,7 @@ const search = ref('')
           <input v-model="search" placeholder="Search" class="h-12 bg-transparent -ml-8 focus:outline-none">
         </div>
       </div>
-      <div class="border-2 rounded-3xl border-[#1D1D2A] my-4 w-full h-full overflow-y-scroll hidescrollbar">
-      
+      <div class="my-4 w-full h-full overflow-y-scroll hidescrollbar">
         <PostVue />
         <PostVue />
         <PostVue />
@@ -63,8 +74,7 @@ const search = ref('')
         <PostVue />
       </div>
     </div>
-    <div class="flex w-1/4 mt-20 mb-4 items-center justify-center border-2 rounded-3xl border-[#1D1D2A]">
-      Sidebar
+    <div class="flex w-1/4 mt-20 mb-4 items-center justify-center">
     </div>
   </div>
 </template>
@@ -79,17 +89,15 @@ const search = ref('')
   background-color: #9333ea;
   border: none;
 }
-.sidebarButton{
-  background: none;
-  border: none;
-  transition-duration: 0.5s;
-}
 .invisButton{
   background: none;
   border: none;
   transition-duration: 0.5s;
 }
-
+.invisButton:hover{
+  background-color: #1D1D2A;
+  border: none;
+}
 .hidescrollbar {
     -ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */
