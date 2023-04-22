@@ -87,3 +87,12 @@ impl From<Post> for PostPub {
         }
     }
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct Comment {
+    pub comment_id : Uuid,
+    pub post_id: Uuid,
+    pub author_id: Uuid,
+    pub content: String,
+    pub created: DateTime<Utc>,
+}

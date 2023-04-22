@@ -1,4 +1,5 @@
-use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError}, utils::{resp, parse_uuid, get_post_likes}, security};
+use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError, Comment}, utils::{resp, parse_uuid, get_post_likes, get_comment_count}, security};
+use serde::Deserialize;
 use sqlx::{PgPool, PgExecutor};
 use tide::{Request, StatusCode, prelude::json};
 use uuid::Uuid;
@@ -49,6 +50,7 @@ pub async fn get_post(req: Request<WebState>) -> tide::Result {
     let mut pub_post = json!(PostPub::from(get_post_or_err(req.state().db(), &post_id).await?));
 
     pub_post["likes"] = get_post_likes(req.state().db(), &post_id).await?.into();
+    pub_post["comments"] = get_comment_count(req.state().db(), &post_id).await?.into();
 
     resp(200, &pub_post)
 }
@@ -146,12 +148,43 @@ pub async fn get_posts(req: Request<WebState>) -> tide::Result {
     resp(200, &json!(posts_pub))
 }
 
+pub async fn get_post_comments(req: Request<WebState>) -> tide::Result {
+    let post_id = parse_uuid(req.param("post_id").expect("post_id parameter not set"))?;
+
+    get_post_or_err(req.state().db(), &post_id).await?;
+
+    let comments = sqlx::query_as!(Comment, "SELECT * FROM comments WHERE post_id = $1 ORDER BY created DESC", &post_id).fetch_all(req.state().db()).await?;
+
+    resp(200, &json!(comments))
+}
+
+pub async fn create_post_comment(mut req: Request<WebState>) -> tide::Result {
+    #[derive(Deserialize)]
+    struct ReqBody {
+        pub content: String,
+    }
+    let body: ReqBody = req.body_json().await?;
+
+    let post_id = parse_uuid(req.param("post_id").expect("post_id parameter not set"))?;
+    let user: &User = req.ext().unwrap();
+
+    // check post exists
+    get_post_or_err(req.state().db(), &post_id).await?;
+
+
+    let comment = sqlx::query_as!(Comment, "INSERT INTO comments (post_id, author_id, content) VALUES ($1, $2, $3) RETURNING *", &post_id, &user.user_id, body.content).fetch_one(req.state().db()).await?;
+
+    resp(200, &json!(comment))
+}
+
+
 pub async fn get_router(pool: Box<PgPool>, fileman: Box<FileManager>) -> tide::Server<WebState> {
     let mut app = tide::with_state(WebState { pool, fileman });
 
     app.at("/").with(security::session_guard).post(create_post);
     app.at("/:post_id").get(get_post).with(security::session_guard).delete(delete_post);
     app.at("/:post_id/content").get(get_post_content);
+    app.at("/:post_id/comments").get(get_post_comments).with(security::session_guard).post(create_post_comment);
 
     app.at("/:post_id/like").with(security::session_guard).post(like_post).delete(unlike_post);
 

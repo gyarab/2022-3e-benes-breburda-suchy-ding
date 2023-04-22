@@ -22,7 +22,7 @@ CREATE TABLE posts (
     post_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     author_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    created TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE post_likes (
@@ -39,4 +39,12 @@ CREATE TABLE post_rank (
     rank INTEGER NOT NULL DEFAULT 0,
 
     UNIQUE (post_id, user_id)
+);
+
+CREATE TABLE comments (
+    comment_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    post_id UUID NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
+    author_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created TIMESTAMPTZ NOT NULL DEFAULT now()
 );

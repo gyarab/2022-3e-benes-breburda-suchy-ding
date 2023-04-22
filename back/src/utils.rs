@@ -55,3 +55,7 @@ pub async fn get_listening<'a, T: PgExecutor<'a>>(executor: T, user_id: &Uuid) -
 pub async fn get_post_likes<'a, T: PgExecutor<'a>>(executor: T, post_id: &Uuid) -> anyhow::Result<i64> {
     Ok(sqlx::query!("SELECT COALESCE(COUNT(*), 0) as count FROM post_likes WHERE post_id = $1", &post_id).fetch_one(executor).await?.count.unwrap())
 }
+
+pub async fn get_comment_count<'a, T: PgExecutor<'a>>(executor: T, post_id: &Uuid) -> anyhow::Result<i64> {
+    Ok(sqlx::query!("SELECT COALESCE(COUNT(*), 0) as count FROM comments WHERE post_id = $1", &post_id).fetch_one(executor).await?.count.unwrap())
+}
