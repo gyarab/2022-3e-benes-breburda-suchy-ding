@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use std::fmt;
-use std::error::Error;
+mod client_error;
+pub use client_error::ClientError;
 
 #[derive(Deserialize, Serialize, Clone)]
 pub struct User {
@@ -9,21 +9,22 @@ pub struct User {
     pub name: String,
     pub email: String,
     pub password: String,
-    pub email_verified: bool,
+    pub profile_picture: Option<String>,
+    pub bio: String,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct UserPub {
     pub user_id: Uuid,
     pub name: String,
-    pub email: String,
+    pub bio: String,
 }
 impl From<User> for UserPub {
     fn from(u: User) -> Self {
         Self {
             user_id: u.user_id,
             name: u.name,
-            email: u.email,
+            bio: u.bio,
         }
     }
 }
@@ -34,28 +35,17 @@ pub struct Session {
     pub user_id: Uuid,
     pub token: String,
 }
-
-#[derive(Debug)]
-pub struct ClientError {
-    pub status_code: u16,
-    pub code: String,
-    pub message: String,
+#[derive(sqlx::Type, Serialize, Deserialize)]
+#[sqlx(type_name = "email_token_type")]
+#[allow(non_camel_case_types)]
+pub enum EmailTokenType {
+    verify_email,
+    password_restore
 }
 
-impl ClientError {
-    pub fn new(status_code: u16, code: &str, message: &str) -> Self {
-        Self {
-            status_code,
-            code: code.to_owned(),
-            message: message.to_owned(),
-        }
-    }
+#[derive(Deserialize, Serialize)]
+pub struct EmailToken {
+    pub user_id: Uuid,
+    pub token: String,
+    pub token_type: EmailTokenType,
 }
-
-impl fmt::Display for ClientError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}: {} ({})", self.status_code, self.code, self.message)
-    }
-}
-
-impl Error for ClientError {}

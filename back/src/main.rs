@@ -5,9 +5,7 @@ mod state;
 mod config;
 mod utils;
 mod mail;
-use lettre::AsyncSmtpTransport;
-use lettre::AsyncStd1Executor;
-use lettre::transport::smtp::authentication::Credentials;
+mod fileman;
 use sqlx::postgres::PgPoolOptions;
 use tide::http::Method;
 use tide::prelude::json;
@@ -81,6 +79,8 @@ async fn main() -> tide::Result<()> {
 
     let mailer = mail::Mailer::new(&config.smtp_host, config.smtp_username, config.smtp_password, None);
 
+    let fileman = fileman::FileManager::new(&config.upload_dir).await;
+
     let mut app = tide::new();
 
     app.with(tide::utils::After(error_handler));
@@ -89,7 +89,7 @@ async fn main() -> tide::Result<()> {
 
     app.at("/").get(demo);
     app.at("/api/users")
-        .nest(routers::users::get_router(pool.clone(), Box::new(mailer)).await);
+        .nest(routers::users::get_router(pool.clone(), Box::new(mailer), Box::new(fileman)).await);
     app.at("/api/sessions")
         .nest(routers::sessions::get_router(pool.clone()).await);
 

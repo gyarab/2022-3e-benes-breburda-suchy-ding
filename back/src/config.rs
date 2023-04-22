@@ -10,6 +10,7 @@ pub struct Config {
     pub smtp_host: String,
     pub smtp_username: String,
     pub smtp_password: String,
+    pub upload_dir: String,
 }
 
 impl Config {
