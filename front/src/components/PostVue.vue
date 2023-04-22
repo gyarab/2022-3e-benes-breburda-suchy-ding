@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from 'vue'
-import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon } from '@heroicons/vue/20/solid'
+import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 import { ChatBubbleBottomCenterTextIcon, PlayCircleIcon, UserCircleIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
 
 const openComments = ref(false)
+const addCommentActive = ref(false)
 const isDinged = ref(false)
 const isSaved = ref(false)
-const comment = ref('')
+
 
 </script>
 
@@ -17,17 +18,28 @@ const comment = ref('')
         </div>
         <div class="flex flex-col w-1/2">
             <div v-if="openComments" class="h-full">
-                <div class="flex mt-2 items-center">
+                <div class="relative h-full">
+                    <div class="flex mt-2 items-center">
                     <button class="iconButton w-8 h-8 p-0">
                         <ChevronLeftIcon @click="openComments = !openComments" class="h-7"/>
                     </button>
                     <div class="text-xl">
                         Comments
                     </div>
+                    </div>
+                    <div class="flex items-center border-2 border-[#1D1D2A]">
+                        the comments section
+                    </div>
+                    <div class="flex w-full absolute bottom-0">
+                        <div class="flex w-full bg-[#1D1D2A] mb-4 mr-2 rounded-2xl">
+                            <input id="JanLana" @focus="addCommentActive = !addCommentActive" @blur="addCommentActive = !addCommentActive" class="flex w-5/6 bg-transparent text-base focus:outline-none placeholder:italic" placeholder="Add your thoughts...">
+                            <div v-if="addCommentActive" class="flex items-center">
+                                <ChevronRightIcon @click="openComments = !openComments" class="ml-3 h-7 p-0"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex border-2 rounded-xl border-[#1D1D2A] h-20 w-64 justify-center">
-                    <input v-model="comment" class="flex bg-transparent h-full w-full" placeholder="Add your thoughts...">
-                </div>
+                
             </div>
             <div v-else class="flex flex-col h-full">
                 <div class="flex h-1/4 mt-4 items-center justify-center">

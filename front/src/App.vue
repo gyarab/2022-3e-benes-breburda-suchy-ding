@@ -43,7 +43,6 @@ input {
   padding: 1rem 2rem;
   margin: 8px 0;
   border-radius: 25px;
-  -webkit-text-fill-color: rgb(255, 255, 255);
   border: none;
   font-size: 1.25rem;
 
