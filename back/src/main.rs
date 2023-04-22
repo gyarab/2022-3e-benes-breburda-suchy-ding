@@ -89,9 +89,12 @@ async fn main() -> tide::Result<()> {
 
     app.at("/").get(demo);
     app.at("/api/users")
-        .nest(routers::users::get_router(pool.clone(), Box::new(mailer), Box::new(fileman)).await);
+        .nest(routers::users::get_router(pool.clone(), Box::new(mailer), Box::new(fileman.clone())).await);
     app.at("/api/sessions")
         .nest(routers::sessions::get_router(pool.clone()).await);
+
+    app.at("/api/posts")
+        .nest(routers::posts::get_router(pool.clone(), Box::new(fileman.clone())).await);
 
     app.listen(format!("{}:{}", config.host, config.port)).await?;
 

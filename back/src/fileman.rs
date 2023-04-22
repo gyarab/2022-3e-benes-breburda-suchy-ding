@@ -1,4 +1,4 @@
-use async_std::{path::PathBuf, fs::{self, File}};
+use async_std::{path::PathBuf, fs::File};
 use ring::rand::{SystemRandom, SecureRandom};
 use base64::{Engine as _, engine::general_purpose as base64_coder};
 

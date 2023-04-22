@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::PgExecutor;
 use uuid::Uuid;
@@ -47,7 +48,6 @@ pub struct Session {
 #[sqlx(type_name = "email_token_type")]
 #[allow(non_camel_case_types)]
 pub enum EmailTokenType {
-    verify_email,
     password_restore
 }
 
@@ -56,4 +56,34 @@ pub struct EmailToken {
     pub user_id: Uuid,
     pub token: String,
     pub token_type: EmailTokenType,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Post {
+    pub post_id: Uuid,
+    pub author_id: Uuid,
+    pub content: String,
+    pub created: DateTime<Utc>,
+}
+impl Post {
+    pub async fn from_db<'a, T: PgExecutor<'a>>(db: T, item_id: &Uuid) -> anyhow::Result<Option<Self>>{
+        let item = sqlx::query_as!(Self, "SELECT * FROM posts WHERE post_id = $1", item_id).fetch_optional(db).await?;
+        Ok(item)
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct PostPub {
+    pub post_id : Uuid,
+    pub author_id: Uuid,
+    pub created: DateTime<Utc>,
+}
+impl From<Post> for PostPub {
+    fn from(p: Post) -> Self {
+        Self {
+            post_id: p.post_id,
+            author_id: p.author_id,
+            created: p.created,
+        }
+    }
 }
