@@ -3,6 +3,7 @@ use crate::mail::Mailer;
 use crate::models::ClientError;
 use crate::models::User;
 use crate::models::UserPub;
+use crate::utils::{ get_listeners, get_listening };
 use crate::utils::parse_uuid;
 use crate::utils::resp;
 use sqlx::PgPool;
@@ -31,11 +32,20 @@ impl StateWithDb for WebState {
 }
 
 async fn get_me(req: Request<WebState>) -> tide::Result {
-    // pub user with email added
     let user: User = req.ext::<User>().unwrap().to_owned();
+
+    // pub user with email added
     let email = user.email.to_owned();
-    let mut json = json!(UserPub::from(user));
+    let mut json = json!(UserPub::from(user.clone()));
     json["email"] = email.into();
+
+    let listeners: Vec<UserPub> = get_listeners(req.state().db(), &user.user_id).await?
+        .into_iter().map(|i| UserPub::from(i)).collect();
+    let listenees: Vec<UserPub> = get_listening(req.state().db(), &user.user_id).await?
+        .into_iter().map(|i| UserPub::from(i)).collect();
+    json["listeners"] = json!(listeners);
+    json["listening"] = json!(listenees);
+
     resp(200, &json)
 }
 
@@ -272,10 +282,21 @@ async fn upload_profile_pic(mut req: Request<WebState>) -> tide::Result {
 async fn get_user(req: Request<WebState>) -> tide::Result {
     let user_id = parse_uuid(req.param("user_id").expect("user_id parameter not set"))?;
 
-    let user = sqlx::query_as!(User, "SELECT * FROM users WHERE user_id = $1", user_id).fetch_optional(req.state().db()).await?;
+    let user = User::from_db(req.state().db(), &user_id).await?;
 
     match user {
-        Some(user) => resp(200, &UserPub::from(user)),
+        Some(user) => {
+            let listeners: Vec<UserPub> = get_listeners(req.state().db(), &user.user_id).await?
+                .into_iter().map(|i| UserPub::from(i)).collect();
+            let listenees: Vec<UserPub> = get_listening(req.state().db(), &user.user_id).await?
+                .into_iter().map(|i| UserPub::from(i)).collect();
+
+            let mut json = json!(UserPub::from(user));
+            json["listeners"] = json!(listeners);
+            json["listening"] = json!(listenees);
+
+            resp(200, &json)
+        },
         None => Err(ClientError::new(404, "user_not_found", "User does not exist").into()),
     }
 }
@@ -284,6 +305,34 @@ async fn get_user_profile_pic(req: Request<WebState>) -> tide::Result {
     let user_id = parse_uuid(req.param("user_id").expect("user_id parameter not set"))?;
 
     get_profile_pic(req, &user_id).await
+}
+
+async fn listen_to_user(req: Request<WebState>) -> tide::Result {
+    let listenee_id = parse_uuid(req.param("user_id").expect("user_id parameter not set"))?;
+
+    let user: &User = req.ext().unwrap();
+
+    let mut db = req.state().db().begin().await?;
+
+    let listenee = User::from_db(&mut db, &listenee_id).await?;
+    if listenee.is_none() {
+        return Err(ClientError::new(404, "user_not_found", "The user was not found").into());
+    }
+
+    sqlx::query!("INSERT INTO listeners (listener, listenee) VALUES ($1, $2)", &user.user_id, &listenee_id).execute(&mut db).await?;
+
+    db.commit().await?;
+
+    Ok(StatusCode::Ok.into())
+}
+
+async fn stop_listening_to_user(req: Request<WebState>) -> tide::Result {
+    let listenee_id = parse_uuid(req.param("user_id").expect("user_id parameter not set"))?;
+    let user: &User = req.ext().unwrap();
+
+    sqlx::query!("DELETE FROM listeners WHERE listener = $1 AND listenee = $2", &user.user_id, &listenee_id).execute(req.state().db()).await?;
+
+    Ok(StatusCode::Ok.into())
 }
 
 pub async fn get_router(pool: Box<PgPool>, mailer: Box<Mailer>, fileman: Box<FileManager>) -> tide::Server<WebState> {
@@ -309,6 +358,10 @@ pub async fn get_router(pool: Box<PgPool>, mailer: Box<Mailer>, fileman: Box<Fil
     app.at("/").post(create_user);
     app.at("/:user_id").get(get_user);
     app.at("/:user_id/profile.jpg").get(get_user_profile_pic);
+
+    app.at("/:user_id/listen").with(security::session_guard)
+        .post(listen_to_user)
+        .delete(stop_listening_to_user);
 
     app
 }

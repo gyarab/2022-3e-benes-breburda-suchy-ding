@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use sqlx::PgExecutor;
 use uuid::Uuid;
 mod client_error;
 pub use client_error::ClientError;
@@ -11,6 +12,13 @@ pub struct User {
     pub password: String,
     pub profile_picture: Option<String>,
     pub bio: String,
+}
+
+impl User {
+    pub async fn from_db<'a, T: PgExecutor<'a>>(db: T, user_id: &Uuid) -> anyhow::Result<Option<Self>>{
+        let user = sqlx::query_as!(Self, "SELECT * FROM users WHERE user_id = $1", user_id).fetch_optional(db).await?;
+        Ok(user)
+    }
 }
 
 #[derive(Deserialize, Serialize)]
