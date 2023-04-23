@@ -2,14 +2,20 @@
 import { store } from './store';
 import { ref } from 'vue'
 import { SignalIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { BellIcon, Cog8ToothIcon, UserCircleIcon, ArrowLeftCircleIcon } from '@heroicons/vue/24/outline'
+import { BellIcon, Cog8ToothIcon, UserCircleIcon, ArrowLeftCircleIcon, HomeIcon, InboxArrowDownIcon } from '@heroicons/vue/24/outline'
 import PostVue from './components/PostVue.vue'
 
 const search = ref('')
+const savedPosts = ref(false)
 
 function logout() {
   window.localStorage.removeItem('api-key');
   location.reload();
+}
+function homeClick() {
+  if (savedPosts.value === true) {
+    savedPosts.value = false;
+  }
 }
 
 </script>
@@ -32,13 +38,26 @@ function logout() {
           </div>
         </button>
 
+        <button @click="homeClick" class="invisButton flex block w-64 items-center m-2">
+          <HomeIcon class="h-6 mr-2"/>
+          <div>
+            Home
+          </div> 
+        </button>
+
+        <button @click="savedPosts = true" class="invisButton flex block w-64 items-center m-2">
+          <InboxArrowDownIcon class="h-6 mr-2"/>
+          <div>
+            Saved Posts
+          </div> 
+        </button>
         <button class="invisButton flex block w-64 items-center m-2">
           <BellIcon class="h-6 mr-2"/>
           <div>
             Notifications
           </div> 
         </button>
-
+        
         <button @click="$router.push({ path: '/settings' })" class="invisButton flex block w-64 items-center m-2">
           <Cog8ToothIcon class="h-6 mr-2"/>
           <div>
@@ -54,8 +73,21 @@ function logout() {
         </button>
       </div>
     </div>
+    
+    <div v-if="savedPosts" class="flex flex-col w-1/2 items-center">
+      <div class="w-full">
+        <div class="flex text-3xl font-bold h-16 justify-center">
+          <h1 class="mt-6">Saved Posts</h1>
+        </div>
+      </div>
+      <div class="my-4 w-full h-full overflow-y-scroll hidescrollbar">
+        <PostVue />
+        <PostVue />
+        <PostVue />
+      </div>
+    </div>
 
-    <div class="flex flex-col w-1/2 items-center">
+    <div v-else class="flex flex-col w-1/2 items-center">
       <div class="w-full">
         <div class="flex bg-[#1D1D2A] rounded-full h-12 mt-4 items-center">
           <MagnifyingGlassIcon class="h-7 ml-4 mr-4"/>

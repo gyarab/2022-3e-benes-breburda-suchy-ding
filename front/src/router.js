@@ -19,7 +19,7 @@ const router = createRouter({
     name: 'home',
     component: Home,
     meta: {
-      title: 'Home :))',
+      title: 'Home',
       requiresLogin: true,
     },
   }, {

@@ -5,7 +5,7 @@ import { UserCircleIcon, AdjustmentsHorizontalIcon, ArrowLeftCircleIcon, BellAle
 
 const userSettings = ref(false)
 const profileSettings = ref(false)
-const notificationsSettings = ref(false)
+const notificationSettings = ref(false)
 
 </script>
 
@@ -37,9 +37,9 @@ const notificationsSettings = ref(false)
                     <ChevronLeftIcon class="h-5 m-0"/>
                 </button>
             </div>
-            <div v-else-if="notificationsSettings" class="flex">
-                <h1>list of notifications settings</h1>
-                <button @click="notificationsSettings = !notificationsSettings" class="flex rounded-full w-15 h-15 margin-center items-center">
+            <div v-else-if="notificationSettings" class="flex">
+                <h1>list of notification settings</h1>
+                <button @click="notificationSettings = !notificationSettings" class="flex rounded-full w-15 h-15 margin-center items-center">
                     <ChevronLeftIcon class="h-5 m-0"/>
                 </button>
             </div>
@@ -56,10 +56,10 @@ const notificationsSettings = ref(false)
                         Profile Settings
                     </div> 
                 </button>
-                <button @click="notificationsSettings = !notificationsSettings" class="invisButton flex block w-64 items-center m-2">
+                <button @click="notificationSettings = !notificationSettings" class="invisButton flex block w-64 items-center m-2">
                     <BellAlertIcon class="h-6 mr-2"/>
                     <div>
-                        Notifications Settings
+                        Notification Settings
                     </div> 
                 </button>
             </div>
