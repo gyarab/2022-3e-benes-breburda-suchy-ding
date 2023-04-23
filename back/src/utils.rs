@@ -1,10 +1,18 @@
+use std::fmt::Debug;
 use std::str::FromStr;
 
 use sqlx::PgExecutor;
+use tide::log;
 use uuid::Uuid;
 
 use crate::models::ClientError;
 use crate::models::User;
+
+pub fn log_err<T: Debug, R: Debug>(res: Result<T, R>) {
+    if res.is_err() {
+        log::error!("Error: {:?}", res.unwrap_err());
+    }
+}
 
 pub fn resp(status: u16, body: &impl serde::Serialize) -> tide::Result {
     let body = tide::Body::from_json(body)?;

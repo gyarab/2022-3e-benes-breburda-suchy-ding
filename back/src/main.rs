@@ -6,12 +6,14 @@ mod config;
 mod utils;
 mod mail;
 mod fileman;
+mod worker;
 use sqlx::postgres::PgPoolOptions;
 use tide::http::Method;
 use tide::prelude::json;
 use validator::ValidationErrors;
 use std::env;
 use std::future::Future;
+use std::sync::Arc;
 use async_std::fs::File;
 use tide::log;
 use tide::Request;
@@ -70,16 +72,19 @@ async fn main() -> tide::Result<()> {
     let mut conf_file = File::open(env::var("CONFIG_FILE").unwrap_or("config.toml".to_owned())).await?;
     let config = config::Config::from_file(&mut conf_file).await?;
 
-    let pool = Box::new(
+    let pool = Arc::new(
         PgPoolOptions::new()
             .max_connections(5)
             .connect(&config.database_url)
             .await?,
     ); 
 
-    let mailer = mail::Mailer::new(&config.smtp_host, config.smtp_username, config.smtp_password, None);
+    let mailer = Arc::new(mail::Mailer::new(&config.smtp_host, config.smtp_username, config.smtp_password, None));
 
-    let fileman = fileman::FileManager::new(&config.upload_dir).await;
+    let fileman = Arc::new(fileman::FileManager::new(&config.upload_dir).await);
+
+    let (sender, handle) = worker::create_task_runner().await;
+    let sender = Arc::new(sender);
 
     let mut app = tide::new();
 
@@ -89,14 +94,17 @@ async fn main() -> tide::Result<()> {
 
     app.at("/").get(demo);
     app.at("/api/users")
-        .nest(routers::users::get_router(pool.clone(), Box::new(mailer), Box::new(fileman.clone())).await);
+        .nest(routers::users::get_router(pool.clone(), mailer.clone(), fileman.clone(), sender.clone()).await);
     app.at("/api/sessions")
         .nest(routers::sessions::get_router(pool.clone()).await);
 
     app.at("/api/posts")
-        .nest(routers::posts::get_router(pool.clone(), Box::new(fileman.clone())).await);
+        .nest(routers::posts::get_router(pool.clone(), fileman.clone(), sender.clone()).await);
 
     app.listen(format!("{}:{}", config.host, config.port)).await?;
+
+    sender.close();
+    handle.await;
 
     Ok(())
 }

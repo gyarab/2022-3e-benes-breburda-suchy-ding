@@ -1,4 +1,6 @@
-use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError, Comment}, utils::{resp, parse_uuid, get_post_likes, get_comment_count}, security};
+use std::sync::Arc;
+
+use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError, Comment}, utils::{resp, parse_uuid, get_post_likes, get_comment_count}, security, worker::WorkQueue};
 use serde::Deserialize;
 use sqlx::{PgPool, PgExecutor};
 use tide::{Request, StatusCode, prelude::json};
@@ -8,8 +10,9 @@ use uuid::Uuid;
 
 #[derive(Clone)]
 pub struct WebState {
-    pub pool: Box<PgPool>,
-    pub fileman: Box<FileManager>,
+    pub pool: Arc<PgPool>,
+    pub fileman: Arc<FileManager>,
+    pub worker: Arc<WorkQueue>,
 }
 
 
@@ -178,8 +181,8 @@ pub async fn create_post_comment(mut req: Request<WebState>) -> tide::Result {
 }
 
 
-pub async fn get_router(pool: Box<PgPool>, fileman: Box<FileManager>) -> tide::Server<WebState> {
-    let mut app = tide::with_state(WebState { pool, fileman });
+pub async fn get_router(pool: Arc<PgPool>, fileman: Arc<FileManager>, worker: Arc<WorkQueue>) -> tide::Server<WebState> {
+    let mut app = tide::with_state(WebState { pool, fileman, worker });
 
     app.at("/").with(security::session_guard).post(create_post);
     app.at("/:post_id").get(get_post).with(security::session_guard).delete(delete_post);

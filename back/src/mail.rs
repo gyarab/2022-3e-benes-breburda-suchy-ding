@@ -1,3 +1,5 @@
+use tide::log;
+
 use lettre::{AsyncSmtpTransport, AsyncStd1Executor, message::Mailbox, transport::smtp::authentication::Credentials, Message, AsyncTransport};
 use anyhow::anyhow;
 
@@ -26,13 +28,15 @@ impl Mailer {
         }
     }
 
-    pub async fn send_mail(&self, to: &str, subject: &str, body: String) -> anyhow::Result<()>{
+    pub async fn send_mail(&self, to: &str, subject: &str, body: String) {
         let msg = Message::builder()
             .from(self.from_address.clone())
             .to(to.parse().unwrap())
             .subject(subject)
             .body(body)
             .unwrap();
-        self.send_mail_raw(msg).await
+        if let Err(e) = self.send_mail_raw(msg).await {
+            log::error!("failed to send mail: {}", e);
+        }
     }
 }

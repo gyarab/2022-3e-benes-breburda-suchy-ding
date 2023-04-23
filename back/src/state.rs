@@ -1,8 +1,10 @@
+use std::sync::Arc;
+
 use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
 pub struct WebState {
-    pub pool: Box<PgPool>,
+    pub pool: Arc<PgPool>,
 }
 
 pub trait StateWithDb {

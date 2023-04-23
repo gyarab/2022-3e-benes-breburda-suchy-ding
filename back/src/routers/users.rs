@@ -1,11 +1,16 @@
+use std::sync::Arc;
+
 use crate::fileman::FileManager;
 use crate::mail::Mailer;
 use crate::models::ClientError;
 use crate::models::User;
 use crate::models::UserPub;
+use crate::utils::log_err;
 use crate::utils::{ get_listeners, get_listening };
 use crate::utils::parse_uuid;
 use crate::utils::resp;
+use crate::worker;
+use crate::worker::WorkQueue;
 use sqlx::PgPool;
 use sqlx::Postgres;
 use sqlx::QueryBuilder;
@@ -19,9 +24,10 @@ use crate::security;
 
 #[derive(Clone)]
 pub struct WebState {
-    pub pool: Box<PgPool>,
-    pub mailer: Box<Mailer>,
-    pub fileman: Box<FileManager>,
+    pub pool: Arc<PgPool>,
+    pub mailer: Arc<Mailer>,
+    pub fileman: Arc<FileManager>,
+    pub worker: Arc<WorkQueue>,
 }
 
 
@@ -82,8 +88,14 @@ async fn create_user(mut req: Request<WebState>) -> tide::Result {
         security::hash(&body.password).await?
     ).fetch_one(req.state().db()).await?;
 
-    // NOTIME: should be done after the request has been sent
-    req.state().mailer.send_mail(&body.email, "Thank you for registering", "Your email will be used for notifications and resetting your password in the case you lose it.\n\nDing dong!".to_owned()).await?;
+    let mailer = req.state().mailer.clone();
+    log_err(req.state().worker.send(Box::pin(async move {
+        mailer.send_mail(
+            &body.email,
+            "Thank you for registering",
+            "Your email will be used for notifications and resetting your password in the case you lose it.\n\nDing dong!".to_owned()
+        ).await;
+    })).await);
 
     resp(200, &UserPub::from(usr))
 }
@@ -184,11 +196,14 @@ async fn send_restore_password(mut req: Request<WebState>) -> tide::Result {
             user.user_id
         ).fetch_one(&mut db).await?;
 
-        req.state().mailer.send_mail(
-            &user.email,
-            "Forgotten password",
-            format!("Please click the following link to reset your password: https://ding.ecko.ga/password_reset?token={}", res.token)
-        ).await?;
+        let mailer = req.state().mailer.clone();
+        log_err(req.state().worker.send(Box::pin(async move {
+            mailer.send_mail(
+                &user.email,
+                "Forgotten password",
+                format!("Please click the following link to reset your password: https://ding.ecko.ga/password_reset?token={}", res.token)
+            ).await;
+        })).await);
     }
 
     db.commit().await?;
@@ -335,8 +350,8 @@ async fn stop_listening_to_user(req: Request<WebState>) -> tide::Result {
     Ok(StatusCode::Ok.into())
 }
 
-pub async fn get_router(pool: Box<PgPool>, mailer: Box<Mailer>, fileman: Box<FileManager>) -> tide::Server<WebState> {
-    let mut app = tide::with_state(WebState { pool, mailer, fileman });
+pub async fn get_router(pool: Arc<PgPool>, mailer: Arc<Mailer>, fileman: Arc<FileManager>, worker: Arc<worker::WorkQueue>) -> tide::Server<WebState> {
+    let mut app = tide::with_state(WebState { pool, mailer, fileman, worker });
 
     app.at("/me").with(security::session_guard)
         .get(get_me)
