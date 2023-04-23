@@ -79,7 +79,7 @@ async fn main() -> tide::Result<()> {
             .await?,
     ); 
 
-    let mailer = Arc::new(mail::Mailer::new(&config.smtp_host, config.smtp_username, config.smtp_password, None));
+    let mailer = Arc::new(mail::Mailer::new(&config.smtp_host, config.smtp_username.clone(), config.smtp_password.clone(), None));
 
     let fileman = Arc::new(fileman::FileManager::new(&config.upload_dir).await);
 
@@ -99,7 +99,7 @@ async fn main() -> tide::Result<()> {
         .nest(routers::sessions::get_router(pool.clone()).await);
 
     app.at("/api/posts")
-        .nest(routers::posts::get_router(pool.clone(), fileman.clone(), sender.clone()).await);
+        .nest(routers::posts::get_router(pool.clone(), fileman.clone(), sender.clone(), config.clone()).await);
 
     app.listen(format!("{}:{}", config.host, config.port)).await?;
 

@@ -31,6 +31,7 @@ cross build --release
 strip target/x86_64-unknown-linux-gnu/release/backend
 
 cp target/x86_64-unknown-linux-gnu/release/backend ../dist/server
+cp run-speech-checks.sh ../dist
 rm -r target  # free up space
 
 popd
@@ -52,7 +53,7 @@ popd
 
 mkdir -p dist
 tar czv -f dist/$PROJECT-$DATE-$VERSION.tar.gz -C "$TMP/dist" \
-    server sql public
+    server sql public run-speech-checks.sh
 
 ln -snf $PROJECT-$DATE-$VERSION.tar.gz dist/latest.tar.gz
 

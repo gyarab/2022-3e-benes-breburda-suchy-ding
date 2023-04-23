@@ -2,7 +2,7 @@ use anyhow::{anyhow, Result};
 use async_std::{fs::File, io::ReadExt};
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Config {
     pub database_url: String,
     pub host: String,
@@ -11,6 +11,7 @@ pub struct Config {
     pub smtp_username: String,
     pub smtp_password: String,
     pub upload_dir: String,
+    pub whisper_cpp_root: String,
 }
 
 impl Config {

@@ -1,9 +1,10 @@
-use std::sync::Arc;
+use std::{sync::Arc, process::Stdio};
 
-use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError, Comment}, utils::{resp, parse_uuid, get_post_likes, get_comment_count}, security, worker::WorkQueue};
+use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError, Comment}, utils::{resp, parse_uuid, get_post_likes, get_comment_count, log_err}, security, worker::WorkQueue, config::Config};
+use async_std::process::Command;
 use serde::Deserialize;
 use sqlx::{PgPool, PgExecutor};
-use tide::{Request, StatusCode, prelude::json};
+use tide::{Request, StatusCode, prelude::json, log};
 use uuid::Uuid;
 
 
@@ -13,6 +14,7 @@ pub struct WebState {
     pub pool: Arc<PgPool>,
     pub fileman: Arc<FileManager>,
     pub worker: Arc<WorkQueue>,
+    pub config: Config,
 }
 
 
@@ -43,6 +45,38 @@ pub async fn create_post(mut req: Request<WebState>) -> tide::Result {
         user.user_id,
         file,
     ).fetch_one(req.state().db()).await?;
+
+    // run deferred checks against file
+    let file_path = req.state().fileman.get_path(&file);
+    let db = req.state().pool.clone();
+    let whisper_root = req.state().config.whisper_cpp_root.clone();
+    log_err(req.state().worker.send(Box::pin(async move {
+        let status = Command::new("bash")
+            .arg("run-speech-checks.sh")
+            .arg(file_path.to_str().unwrap())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .env("WHISPER_ROOT", whisper_root)
+            .output().await;
+        match status {
+            Ok(status) => {
+                match status.status.code() {
+                    Some(0) => {},
+                    Some(1) => {
+                        // process exited with code 1 => bad audio => delete post
+                        log_err(sqlx::query!("DELETE FROM posts WHERE post_id = $1", post.post_id).execute(db.as_ref()).await);
+                    },
+                    _ => {
+                        log::error!("checking speech process killed");
+                        log::info!("{}", String::from_utf8(status.stdout).unwrap_or("failed to unwrap stdout".to_owned()));
+                    }
+                }
+            },
+            Err(e) => {
+                log::error!("error checking speech: {:?}", e);
+            }
+        }
+    })).await);
 
     resp(200, &PostPub::from(post))
 }
@@ -80,6 +114,8 @@ pub async fn delete_post(req: Request<WebState>) -> tide::Result {
         return Err(ClientError::new(403, "not_author", "You're not the author of this post").into());
     }
 
+    // NOTIME: we're leaving files behind -> should be deleted in a central place, probably with a
+    // db hook or something
     sqlx::query!("DELETE FROM posts WHERE post_id = $1", post.post_id).execute(&mut db).await?;
 
     db.commit().await?;
@@ -181,8 +217,8 @@ pub async fn create_post_comment(mut req: Request<WebState>) -> tide::Result {
 }
 
 
-pub async fn get_router(pool: Arc<PgPool>, fileman: Arc<FileManager>, worker: Arc<WorkQueue>) -> tide::Server<WebState> {
-    let mut app = tide::with_state(WebState { pool, fileman, worker });
+pub async fn get_router(pool: Arc<PgPool>, fileman: Arc<FileManager>, worker: Arc<WorkQueue>, config: Config) -> tide::Server<WebState> {
+    let mut app = tide::with_state(WebState { pool, fileman, worker, config });
 
     app.at("/").with(security::session_guard).post(create_post);
     app.at("/:post_id").get(get_post).with(security::session_guard).delete(delete_post);

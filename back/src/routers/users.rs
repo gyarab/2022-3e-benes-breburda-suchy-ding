@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use std::time::Instant;
 
 use crate::fileman::FileManager;
 use crate::mail::Mailer;
@@ -17,6 +18,7 @@ use sqlx::QueryBuilder;
 use tide::StatusCode;
 use tide::prelude::*;
 use tide::Request;
+use tide::log;
 use uuid::Uuid;
 use validator::Validate;
 use crate::state::StateWithDb;

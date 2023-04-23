@@ -37,4 +37,8 @@ impl FileManager {
 
         Ok(filename)
     }
+
+    pub fn get_path(&self, file: &str) -> PathBuf {
+        self.directory.join(file)
+    }
 }
