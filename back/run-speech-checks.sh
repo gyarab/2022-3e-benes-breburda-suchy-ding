@@ -19,13 +19,17 @@ clean_up_exit() {
 
 get_char_count() {
     # remove all text in brackets (eg. "[_BEGIN_]" or "(playing music)")
-    $WHISPER_MAIN \
-        --model $WHISPER_MODEL \
-        --no-timestamps false \
-        --print-special false \
-        --language auto \
-        --speed-up \
-        $1 | sed -E 's/\[[^]]*\]|\([^\)]*\)|\s//g' | wc -c
+    if [ "$DISABLE_CHECKS" == "true" ]; then
+        echo "0";
+    else
+        $WHISPER_MAIN \
+            --model $WHISPER_MODEL \
+            --no-timestamps false \
+            --print-special false \
+            --language auto \
+            --speed-up \
+            $1 | sed -E 's/\[[^]]*\]|\([^\)]*\)|\s//g' | wc -c
+    fi;
 }
 
 pushd "$TEMP_DIR"

@@ -12,6 +12,7 @@ pub struct Config {
     pub smtp_password: String,
     pub upload_dir: String,
     pub whisper_cpp_root: String,
+    pub disable_speech_checks: bool,
 }
 
 impl Config {

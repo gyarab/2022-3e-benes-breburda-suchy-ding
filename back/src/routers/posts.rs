@@ -49,6 +49,7 @@ pub async fn create_post(mut req: Request<WebState>) -> tide::Result {
     // run deferred checks against file
     let db = req.state().pool.clone();
     let whisper_root = req.state().config.whisper_cpp_root.clone();
+    let disable_checks = req.state().config.disable_speech_checks;
     let fileman = req.state().fileman.clone();
     log_err(req.state().worker.send(Box::pin(async move {
         let status = Command::new("bash")
@@ -57,6 +58,7 @@ pub async fn create_post(mut req: Request<WebState>) -> tide::Result {
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .env("WHISPER_ROOT", whisper_root)
+            .env("DISABLE_CHECKS", disable_checks.to_string())
             .output().await;
         match status {
             Ok(status) => {
