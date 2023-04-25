@@ -1,9 +1,9 @@
 use std::sync::Arc;
-use std::time::Instant;
 
 use crate::fileman::FileManager;
 use crate::mail::Mailer;
 use crate::models::ClientError;
+use crate::models::PostPubExt;
 use crate::models::User;
 use crate::models::UserPub;
 use crate::utils::log_err;
@@ -18,7 +18,6 @@ use sqlx::QueryBuilder;
 use tide::StatusCode;
 use tide::prelude::*;
 use tide::Request;
-use tide::log;
 use uuid::Uuid;
 use validator::Validate;
 use crate::state::StateWithDb;
@@ -150,6 +149,7 @@ async fn delete_me(mut req: Request<WebState>) -> tide::Result {
     }
 
     sqlx::query!("DELETE FROM users WHERE user_id = $1", user.user_id).execute(req.state().db()).await?;
+    // NOTIME: we're leaving files behind but idc. should be checked somewhere in a central place
 
     Ok(StatusCode::Ok.into())
 }
@@ -352,13 +352,101 @@ async fn stop_listening_to_user(req: Request<WebState>) -> tide::Result {
     Ok(StatusCode::Ok.into())
 }
 
+pub async fn get_user_posts(req: Request<WebState>) -> tide::Result {
+    let user: &User = req.ext().unwrap();
+
+    let author_id = parse_uuid(req.param("user_id").expect("user_id parameter not set"))?;
+
+    // NOTIME: paginate / after_post query and limit, oh and could be faster
+    let posts = sqlx::query!("
+        SELECT
+            p.*,
+            ext.likes,
+            ext.comments,
+            l.liked,
+            s.saved
+        FROM posts p
+        JOIN post_ext_info ext ON p.post_id = ext.post_id
+        JOIN get_liked($2) l ON p.post_id = l.post_id
+        JOIN get_saved($2) s ON p.post_id = s.post_id
+        WHERE p.author_id = $1
+        ORDER BY p.created DESC
+    ", &author_id, &user.user_id).fetch_all(req.state().db()).await?;
+
+    let posts_pub: Vec<PostPubExt> = posts.into_iter().map(|p| PostPubExt {
+        post_id: p.post_id,
+        author_id: p.author_id,
+        created: p.created,
+        likes: p.likes.unwrap(),
+        comments: p.comments.unwrap(),
+        liked: p.liked.unwrap(),
+        saved: p.saved.unwrap()
+    }).collect();
+
+    resp(200, &json!(posts_pub))
+}
+
+// NOTIME: copy paste for the win (extract to a generic func)
+pub async fn get_my_posts(req: Request<WebState>) -> tide::Result {
+    let user: &User = req.ext().unwrap();
+
+    // NOTIME: paginate / after_post query and limit, oh and could be faster
+    let posts = sqlx::query!("
+        SELECT
+            p.*,
+            ext.likes,
+            ext.comments,
+            l.liked,
+            s.saved
+        FROM posts p
+        JOIN post_ext_info ext ON p.post_id = ext.post_id
+        JOIN get_liked($1) l ON p.post_id = l.post_id
+        JOIN get_saved($1) s ON p.post_id = s.post_id
+        WHERE p.author_id = $1
+        ORDER BY p.created DESC
+    ", &user.user_id).fetch_all(req.state().db()).await?;
+
+    let posts_pub: Vec<PostPubExt> = posts.into_iter().map(|p| PostPubExt {
+        post_id: p.post_id,
+        author_id: p.author_id,
+        created: p.created,
+        likes: p.likes.unwrap(),
+        comments: p.comments.unwrap(),
+        liked: p.liked.unwrap(),
+        saved: p.saved.unwrap()
+    }).collect();
+
+    resp(200, &json!(posts_pub))
+}
+
+pub async fn search_users(req: Request<WebState>) -> tide::Result {
+    #[derive(Deserialize, Validate)]
+    struct Query {
+        #[validate(length(min = 2))]
+        search: String
+    }
+    let query: Query = req.query()?;
+    query.validate()?;
+
+    // NOTIME: awful full-text search, probably slow af but idc :))))
+    let users = sqlx::query_as!(User, "
+        SELECT u.*
+        FROM users u, to_tsquery('simple', $1) query
+        WHERE to_tsvector('simple', bio) @@ query OR position(lower($1) in lower(name)) > 0
+        ORDER BY position(lower($1) in lower(name)) * 10 + ts_rank_cd(to_tsvector('simple', bio), query) DESC
+    ", &query.search).fetch_all(req.state().db()).await?;
+
+    resp(200, &users.into_iter().map(|u| UserPub::from(u)).collect::<Vec<UserPub>>())
+}
+
 pub async fn get_router(pool: Arc<PgPool>, mailer: Arc<Mailer>, fileman: Arc<FileManager>, worker: Arc<worker::WorkQueue>) -> tide::Server<WebState> {
     let mut app = tide::with_state(WebState { pool, mailer, fileman, worker });
 
     app.at("/me").with(security::session_guard)
         .get(get_me)
         .patch(update_me)
-        .delete(delete_me);
+        .delete(delete_me)
+        .at("/posts").get(get_my_posts);
 
     app.at("/me/password").with(security::session_guard)
         .put(update_password);
@@ -374,11 +462,14 @@ pub async fn get_router(pool: Arc<PgPool>, mailer: Arc<Mailer>, fileman: Arc<Fil
 
     app.at("/").post(create_user);
     app.at("/:user_id").get(get_user);
+    app.at("/:user_id/posts").with(security::session_guard).get(get_user_posts);
     app.at("/:user_id/profile.jpg").get(get_user_profile_pic);
 
     app.at("/:user_id/listen").with(security::session_guard)
         .post(listen_to_user)
         .delete(stop_listening_to_user);
+
+    app.at("/search").get(search_users);
 
     app
 }

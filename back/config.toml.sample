@@ -1,0 +1,9 @@
+database_url = "postgresql://ding:ding@localhost/ding"
+host = "0.0.0.0"
+port = 8000
+smtp_host = "sendgrid.com"
+smtp_username = "ding@sendgrid.com"
+smtp_password = "password"
+upload_dir = "uploads"
+
+whisper_cpp_root = "/path/to/whisper.cpp/installation"

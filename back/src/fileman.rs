@@ -1,4 +1,5 @@
 use async_std::{path::PathBuf, fs::File};
+use async_std::fs;
 use ring::rand::{SystemRandom, SecureRandom};
 use base64::{Engine as _, engine::general_purpose as base64_coder};
 
@@ -40,5 +41,11 @@ impl FileManager {
 
     pub fn get_path(&self, file: &str) -> PathBuf {
         self.directory.join(file)
+    }
+
+    pub async fn delete_file(&self, file: &str) -> anyhow::Result<()> {
+        let path = self.directory.join(file);
+        fs::remove_file(path).await?;
+        Ok(())
     }
 }

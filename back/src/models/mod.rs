@@ -89,6 +89,31 @@ impl From<Post> for PostPub {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct PostPubExt {
+    pub post_id : Uuid,
+    pub author_id: Uuid,
+    pub created: DateTime<Utc>,
+    pub likes: i64,
+    pub comments: i64,
+    pub liked: bool,
+    pub saved: bool,
+}
+
+impl PostPubExt {
+    pub fn new(p: Post, likes: i64, comments: i64, liked: bool, saved: bool) -> Self {
+        Self {
+            post_id: p.post_id,
+            author_id: p.author_id,
+            created: p.created,
+            likes,
+            comments,
+            liked,
+            saved
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct Comment {
     pub comment_id : Uuid,
     pub post_id: Uuid,

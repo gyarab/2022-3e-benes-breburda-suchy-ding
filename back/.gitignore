@@ -1,3 +1,5 @@
 target
 .env
 sqlx-data.json
+uploads
+config.toml
