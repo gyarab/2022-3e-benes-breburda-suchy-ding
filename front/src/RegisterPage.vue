@@ -5,6 +5,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
 import rest from './rest'
 import { loadUserData } from './store'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 const passwordField1 = ref("")
 const passwordField2 = ref("")
@@ -13,13 +14,14 @@ const username = ref("")
 let showError = ref(false)
 const showPassword = ref(false)
 const whichIcon = ref(false);
-function switchVisibility(){
+
+function switchVisibility() {
   showPassword.value = !showPassword.value;
 }
-function passwordMatch(){
+function passwordMatch() {
   showError.value = passwordField1.value && passwordField1.value === passwordField2.value
   if (!showError.value) {
-    notify({title: "password mismatch", type: "error"})
+    notify({ title: "password mismatch", type: "error" })
   }
   return showError.value;
 }
@@ -50,50 +52,55 @@ async function register() {
 </script>
 
 <template>
-  <div class="container">
-    <div> <input v-model="username" placeholder="Username" /> </div>
-    <div> <input v-model="email" placeholder="Email" /> </div>
-    <div class="password-field">
-      <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"> </div>
-      <button v-if="whichIcon" @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
-      <EyeIcon class="eyeIcon" />
-    </button>
-    <button v-else @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
-      <EyeSlashIcon class="eyeIcon" />
-    </button>
+  <div class="flex w-screen justify-center">
+    <div class="flex flex-col h-screen justify-center items-center">
+      <div> <input v-model="username" placeholder="Username" @keyup.enter="register" /> </div>
+      <div> <input v-model="email" placeholder="Email" @keyup.enter="register" /> </div>
+      <div class="password-field">
+        <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"
+            @keyup.enter="login"> </div>
+        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();"
+          class="border-transparent hover:bg-transparent">
+          <EyeIcon class="eyeIcon" />
+        </button>
+        <button v-else @click=" switchVisibility(); switchIcon(); " class="border-transparent hover:bg-transparent">
+          <EyeSlashIcon class="eyeIcon" />
+        </button>
+      </div>
+      <div class="password-field">
+        <div> <input :type=" showPassword ? 'text' : 'password' " v-model=" passwordField2 "
+            placeholder="Confirm Password" @keyup.enter=" register ">
+        </div>
+        <button v-if=" whichIcon " @click=" switchVisibility(); switchIcon(); "
+          class="border-transparent hover:bg-transparent">
+          <EyeIcon class="eyeIcon" />
+        </button>
+        <button v-else @click=" switchVisibility(); switchIcon(); " class="border-transparent hover:bg-transparent">
+          <EyeSlashIcon class="eyeIcon" />
+        </button>
+      </div>
+      <button class="submit-button" @click=" register " @keyup.enter=" register ">Confirm</button>
     </div>
-    <div class="password-field">
-      <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField2" placeholder="Confirm Password"> </div>
-      <button v-if="whichIcon" @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
-      <EyeIcon class="eyeIcon" />
-    </button>
-    <button v-else @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
-      <EyeSlashIcon class="eyeIcon" />
-    </button>
-    </div>
-    <button class="submit-button" @click="register">Confirm</button>
   </div>
 </template>
 
 <style>
-.container {
-  text-align: center;
-  width: 30rem;
-  margin: auto;
-}
 input {
   width: 100%;
 }
+
 .password-field {
   position: relative;
 }
+
 .password-field button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   right: 10px;
 }
+
 .submit-button {
   margin: 1rem 0;
-} 
+}
 </style>

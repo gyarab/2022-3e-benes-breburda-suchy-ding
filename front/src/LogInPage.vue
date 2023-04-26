@@ -28,7 +28,7 @@ function switchIcon() {
   whichIcon.value = !whichIcon.value;
 }
 
-function switchVisibility(){
+function switchVisibility() {
   showPassword.value = !showPassword.value;
 }
 
@@ -37,24 +37,25 @@ function switchVisibility(){
 <template>
   <div class="flex h-screen items-center justify-center">
     <div>
-      <input v-model="email" placeholder="Email">
+      <input v-model="email" placeholder="Email" @keyup.enter="login">
       <div class="password-field">
-        <input :type="showPassword ? 'text' : 'password'" placeholder="Password" v-model="password">
-        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
+        <input :type="showPassword ? 'text' : 'password'" placeholder="Password" v-model="password" @keyup.enter="login">
+        <button v-if="whichIcon" @click="switchVisibility(); switchIcon();"
+          class="border-transparent hover:bg-transparent">
           <EyeIcon class="eyeIcon" />
         </button>
-        <button v-else @click="switchVisibility(); switchIcon();" class="border-transparent hover:bg-transparent">
+        <button v-else @click=" switchVisibility(); switchIcon(); " class="border-transparent hover:bg-transparent">
           <EyeSlashIcon class="eyeIcon" />
         </button>
       </div>
-      <button class="submit-button" @click="login">Log in</button>
-      <div>Not a user yet? <RouterLink class="register" to="/register">Register here!</RouterLink></div>
+      <button class="submit-button" @click=" login ">Log in</button>
+      <div>Not a user yet? <RouterLink class="register" to="/register">Register here!</RouterLink>
+      </div>
     </div>
   </div>
 </template> 
 
 <style>
-
 input {
   width: 100%;
 }

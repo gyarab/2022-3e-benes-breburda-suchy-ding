@@ -6,7 +6,7 @@ import LogIn from './LogInPage.vue'
 import Register from './RegisterPage.vue'
 import Profile from './ProfilePage.vue'
 import Settings from './SettingsPage.vue'
-
+import Setup from './SetupPage.vue'
 
 function loggedIn() {
   return store.loggedIn === true;
@@ -57,6 +57,14 @@ const router = createRouter({
     meta: {
       title: 'Settings',
       requiresLogin: true,
+    }
+  }, {
+    path: '/setup',
+    name: '/setup',
+    component: Setup,
+    meta: {
+      title: 'Setup',
+      requiresLogin: false,
     }
   }],
 });

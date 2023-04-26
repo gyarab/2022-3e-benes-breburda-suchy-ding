@@ -8,9 +8,9 @@
     <RouterLink to="/profile">Profile</RouterLink>
     <RouterLink to="/post">Post</RouterLink>
     <RouterLink to="/settings">Settings</RouterLink>
+    <RouterLink to="/setup">Setup</RouterLink>
   </div>
 </template> 
-
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Inter');
@@ -31,7 +31,11 @@ button {
   padding: 0.75rem 1.5rem;
   border: 2px solid #20201E;
 
-  @apply bg-[#222230] rounded-3xl text-white hover:bg-[#303044]
+  @apply bg-[#222230] rounded-3xl text-white
+}
+
+button:hover {
+  @apply bg-[#303044]
 }
 
 text {
@@ -56,5 +60,4 @@ input {
   transform: translate(-50%, -50%);
   margin: 0 auto;
 }
-
 </style>
