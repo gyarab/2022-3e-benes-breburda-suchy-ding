@@ -7,7 +7,7 @@ CREATE TABLE saved_posts (
 );
 
 
-CREATE TABLE post_ext_info AS
+CREATE VIEW post_ext_info AS
     SELECT
         p.post_id,
         COALESCE(COUNT(l.user_id), 0) as likes,
