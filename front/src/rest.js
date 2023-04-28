@@ -14,12 +14,16 @@ async function request(method, url, body = null, headers = {}, init = {}) {
     const response = await fetch(new URL(url, API_HOST), params);
     return {
         status: response.status,
-        body: await response.json(),
+        body: response.headers.get("content-type")  == "application/json" ? await response.json() : null
     };    
 }
 
 async function get(url, headers = {}, init = {}) {
     return await request('GET', url, null, headers, init);
+}
+
+async function del(url, headers = {}, init = {}) {
+    return await request('DELETE', url, null, headers, init);
 }
 
 async function post(url, body = null, headers = {}, init = {}) {
@@ -28,5 +32,6 @@ async function post(url, body = null, headers = {}, init = {}) {
 
 export default {
     get,
-    post
+    post,
+    del
 }

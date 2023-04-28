@@ -3,14 +3,14 @@ import { store } from './store';
 import { ref } from 'vue'
 import { SignalIcon, MagnifyingGlassIcon, PlayIcon, PauseIcon, MusicalNoteIcon } from '@heroicons/vue/20/solid'
 import { Cog8ToothIcon, UserCircleIcon, ArrowLeftCircleIcon, HomeIcon, InboxArrowDownIcon } from '@heroicons/vue/24/outline'
-import PostVue from './components/PostVue.vue'
+import FeedVue from './components/FeedVue.vue'
+
 
 const search = ref('')
 const savedPosts = ref(false)
 const profileView = ref(false)
 const isListeningTo = ref(false)
 const newPost = ref(false)
-
 
 function logout() {
   window.localStorage.removeItem('api-key');
@@ -56,6 +56,7 @@ function postClick() {
     profileView.value = false;
   }
 }
+
 
 
 </script>
@@ -114,11 +115,7 @@ function postClick() {
           <h1 class="mt-6">Saved Posts</h1>
         </div>
       </div>
-      <div class="my-4 w-full h-full overflow-y-scroll hidescrollbar">
-        <PostVue />
-        <PostVue />
-        <PostVue />
-      </div>
+      <FeedVue url="/api/posts/saved"/>
     </div>
 
     <div v-else-if="profileView" class="flex flex-col w-1/2 items-center">
@@ -203,17 +200,7 @@ function postClick() {
           <input v-model="search" placeholder="Search" class="h-12 bg-transparent -ml-8 focus:outline-none">
         </div>
       </div>
-      <div class="my-4 w-full h-full overflow-y-scroll hidescrollbar">
-        <PostVue />
-        <PostVue />
-        <PostVue />
-        <PostVue />
-        <PostVue />
-        <PostVue />
-        <PostVue />
-        <PostVue />
-        <PostVue />
-      </div>
+      <FeedVue url="/api/posts/feed"/>
     </div>
   </div>
 </template>
@@ -255,16 +242,5 @@ function postClick() {
 .playPauseButton:hover {
   background-color: #6b21a8;
   border: none;
-}
-.hidescrollbar {
-  -ms-overflow-style: none;
-  /* for Internet Explorer, Edge */
-  scrollbar-width: none;
-  /* for Firefox */
-  overflow-y: scroll;
-}
-.hidescrollbar::-webkit-scrollbar {
-  display: none;
-  /* for Chrome, Safari, and Opera */
 }
 </style>
