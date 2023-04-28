@@ -36,7 +36,7 @@ function setupDone() {
                         </button>
                     </div>
                 </div>
-                <div class="flex w-1/2 border-2 rounded-3xl border-[#1D1D2A] mb-4 rounded-2xl">
+                <div class="flex w-1/2 border-2 rounded-3xl border-[#1D1D2A] mb-4">
                     <input class="flex bg-transparent text-base focus:outline-none placeholder:italic"
                         placeholder="This will be your Bio..." style="color: #9fa5b3; font-style: italic;">
                 </div>

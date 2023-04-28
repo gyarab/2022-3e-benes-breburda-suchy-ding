@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
 import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
-import { ChatBubbleBottomCenterTextIcon, MicrophoneIcon, UserCircleIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
+import { ChatBubbleBottomCenterTextIcon, UserCircleIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
 import CommentVue from './CommentVue.vue'
+import AudioPlayer from './AudioPlayer.vue'
 import rest from '../rest'
 
-const props = defineProps({post: Object})
+const props = defineProps({ post: Object })
 const openComments = ref(false)
 const addCommentActive = ref(false)
-const isPlaying = ref(false)
 const isDinged = ref(props.post.liked)
 const isSaved = ref(props.post.saved)
 const author = ref({})
@@ -16,9 +16,7 @@ const comments = ref([])
 const commentInput = ref("")
 
 function postChevron() {
-    if (commentInput.value.length > 0) {
-        addCommentActive.value = !addCommentActive.value
-    }
+    addCommentActive.value = commentInput.value.length > 0
 }
 
 async function saving() {
@@ -42,8 +40,8 @@ async function dinging() {
 }
 
 onBeforeMount(async () => {
-   author.value = (await rest.get('/api/users/' + props.post.author_id)).body
-   comments.value = (await rest.get('/api/posts/' + props.post.post_id + '/comments')).body
+    author.value = (await rest.get('/api/users/' + props.post.author_id)).body
+    comments.value = (await rest.get('/api/posts/' + props.post.post_id + '/comments')).body
 })
 
 </script>
@@ -51,8 +49,7 @@ onBeforeMount(async () => {
 <template>
     <div v-if="openComments" class="flex border-2 rounded-3xl border-[#1D1D2A] mb-2 h-1/2">
         <div class="flex w-1/2 m-2 items-center justify-center">
-            <MicrophoneIcon v-if="isPlaying" @click="isPlaying = !isPlaying" class="w-1/2 h-1/2 text-[#6b21a8]" />
-            <MicrophoneIcon v-else @click="isPlaying = !isPlaying" class="w-1/2 h-1/2 text-[#1D1D2A]" />
+            <AudioPlayer :url="'/api/posts/' + props.post.post_id + '/content'" />
         </div>
         <div class="flex flex-col w-1/2">
             <div class="h-full">
@@ -72,7 +69,7 @@ onBeforeMount(async () => {
                     </div>
                     <div class="flex w-full absolute bottom-0">
                         <div class="flex w-full bg-[#1D1D2A] mb-4 mr-2 rounded-2xl">
-                            <input v-model="commentInput" @change="postChevron"
+                            <input v-model="commentInput" @input="postChevron"
                                 class="flex w-5/6 bg-transparent text-base focus:outline-none placeholder:italic"
                                 placeholder="Add your thoughts...">
                             <div v-if="addCommentActive" class="flex items-center">
@@ -88,8 +85,7 @@ onBeforeMount(async () => {
 
     <div v-else class="flex border-2 rounded-3xl border-[#1D1D2A] mb-2 h-1/3">
         <div class="flex w-1/2 m-2 items-center justify-center">
-            <MicrophoneIcon v-if="isPlaying" @click="isPlaying = !isPlaying" class="w-1/2 h-1/2 text-[#6b21a8]" />
-            <MicrophoneIcon v-else @click="isPlaying = !isPlaying" class="w-1/2 h-1/2 text-[#1D1D2A]" />
+            <AudioPlayer :url="'/api/posts/' + props.post.post_id + '/content'" />
         </div>
         <div class="flex flex-col w-1/2">
             <div class="flex flex-col h-full">
