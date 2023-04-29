@@ -56,7 +56,7 @@ function logout() {
         </button>
   </div>
 </template>
-<style>
+<style scoped>
 .newpostButton {
   background-color: #6b21a8;
   border: none;

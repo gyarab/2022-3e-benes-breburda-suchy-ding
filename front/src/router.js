@@ -8,6 +8,7 @@ import Settings from './SettingsPage.vue'
 import Setup from './SetupPage.vue'
 import SavedPostsPage from './SavedPostsPage.vue'
 import ProfilePage from './ProfilePage.vue'
+import NewPostPage from './NewPostPage.vue'
 
 function loggedIn() {
   return store.loggedIn === true;
@@ -74,6 +75,14 @@ const router = createRouter({
     props: true,
     meta: {
       title: 'User profile',
+      requiresLogin: true
+    }
+  }, {
+    path: '/new-post',
+    name: 'new-post',
+    component: NewPostPage,
+    meta: {
+      title: 'New post',
       requiresLogin: true
     }
   }],
