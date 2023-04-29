@@ -180,10 +180,10 @@ pub async fn get_posts(req: Request<WebState>) -> tide::Result {
             WHERE user_id = $1
         ),
         selected_posts AS (
-            SELECT p.* 
+            SELECT p.*, COALESCE(pr.rank, 0) as rank
             FROM posts p
             LEFT JOIN post_rankings pr ON p.post_id = pr.post_id
-            ORDER BY pr.rank DESC, p.created DESC
+            ORDER BY COALESCE(pr.rank, 0) DESC, p.created DESC
             LIMIT 10
         )
         SELECT
@@ -196,6 +196,7 @@ pub async fn get_posts(req: Request<WebState>) -> tide::Result {
         JOIN post_ext_info ext ON sp.post_id = ext.post_id
         JOIN get_liked($1) l ON sp.post_id = l.post_id
         JOIN get_saved($1) s ON sp.post_id = s.post_id
+        ORDER BY sp.rank DESC, sp.created DESC
     ", &user.user_id).fetch_all(req.state().db()).await?;
 
     // update post ranks
