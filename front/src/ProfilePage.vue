@@ -34,7 +34,7 @@ onBeforeMount(async () => {
       <div class="w-full">
         <div class="flex flex-col w-full text-3xl font-bold justify-center items-center">
           <div class="flex flex-col mt-6 w-full justify-center items-center">
-            <ProfilePic :user="user.user_id" class="w-20 h-20" />
+            <ProfilePic :user="user.user_id" size="20" />
             <div class="flex w-full justify-center">
               {{ user.name }}
             </div>

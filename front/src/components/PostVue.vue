@@ -92,7 +92,7 @@ onBeforeMount(async () => {
             <div class="flex flex-col h-full">
                 <div class="flex h-1/4 mt-6 items-center justify-center" @click="$router.push('/user/'+props.post.author_id)">
                     <button class="flex postUserButton w-full h-full mr-4 items-center">
-                        <ProfilePic class="w-14 h-14" :user="props.post.author_id"/>
+                        <ProfilePic size="14" :user="props.post.author_id"/>
                         <div class="ml-2">
                             {{ author.name }}
                         </div>

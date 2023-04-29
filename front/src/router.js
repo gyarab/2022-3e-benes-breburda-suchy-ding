@@ -60,17 +60,6 @@ const router = createRouter({
       requiresLogin: false,
     }
   }, {
-    path: '/me',
-    name: 'profile',
-    component: ProfilePage,
-    props: {
-      user: 'me'
-    },
-    meta: {
-      title: 'My profile',
-      requiresLogin: true
-    }
-  }, {
     path: '/saved',
     name: 'saved-posts',
     component: SavedPostsPage,

@@ -1,5 +1,4 @@
 <script setup>
-import { store } from './store';
 import { ref } from 'vue'
 import { MagnifyingGlassIcon, PlayIcon, PauseIcon, MusicalNoteIcon } from '@heroicons/vue/20/solid'
 import FeedVue from './components/FeedVue.vue'
@@ -7,7 +6,6 @@ import SideBar from './components/SideBar.vue'
 
 
 const search = ref('')
-const savedPosts = ref(false)
 const newPost = ref(false)
 
 </script>

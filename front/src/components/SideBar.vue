@@ -1,37 +1,8 @@
 <script setup>
-import { SignalIcon, MagnifyingGlassIcon, PlayIcon, PauseIcon, MusicalNoteIcon } from '@heroicons/vue/20/solid'
+import { SignalIcon } from '@heroicons/vue/20/solid'
 import { Cog8ToothIcon, ArrowLeftCircleIcon, HomeIcon, InboxArrowDownIcon } from '@heroicons/vue/24/outline'
-import { ref } from 'vue'
 import { store } from '../store'
 import ProfilePic from './ProfilePic.vue'
-
-
-const savedPosts = ref(false)
-const profileView = ref(false)
-const newPost = ref(false)
-
-function profileClick() {
-    if (profileView.value === false) {
-        profileView.value = true;
-    }
-    if (savedPosts.value === true) {
-        savedPosts.value = false;
-    }
-    if (newPost.value === true) {
-        newPost.value = false;
-    }
-}
-function postClick() {
-    if (newPost.value === false) {
-        newPost.value = true;
-    }
-    if (savedPosts.value === true) {
-        savedPosts.value = false;
-    }
-    if (profileView.value === true) {
-        profileView.value = false;
-    }
-}
 
 function logout() {
   window.localStorage.removeItem('api-key');
@@ -42,8 +13,8 @@ function logout() {
 <template>
 
     <div>
-        <button @click="$router.push('/me')" class="invisButton flex items-center w-64 m-2">
-        <ProfilePic user="me" />
+        <button @click="$router.push('/user/me')" class="invisButton flex items-center w-64 m-2">
+        <ProfilePic user="me" size="10"/>
         <div class="ml-2">
             {{ store.user.name }}
         </div>
