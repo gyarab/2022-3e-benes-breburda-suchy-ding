@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { store } from './store.js';
+import { flushUserCache, store } from './store.js';
 
 import Home from './HomePage.vue'
 import LogIn from './LogInPage.vue'
@@ -92,6 +92,9 @@ router.beforeResolve(async to => {
   if (to.meta.requiresLogin && !loggedIn()) {
     return { path: '/login' };
   }
+
+  // flush user cache
+  flushUserCache()
   document.title = to.meta.title;
 })
 

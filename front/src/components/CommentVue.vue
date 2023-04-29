@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
-import rest from '../rest'
 import ProfilePic from './ProfilePic.vue'
+import { getUser } from '../store'
 
 const props = defineProps({ comment: Object })
 const author = ref({})
 
 onBeforeMount(async () => {
-    author.value = (await rest.get('/api/users/' + props.comment.author_id)).body
+    author.value = getUser(props.comment.author_id)
 })
 
 </script>

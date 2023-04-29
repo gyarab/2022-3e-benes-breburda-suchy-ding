@@ -7,7 +7,7 @@ import AudioPlayer from './AudioPlayer.vue'
 import ProfilePic from './ProfilePic.vue'
 import rest from '../rest'
 import { capture_err } from '../notify'
-import { store } from '../store'
+import { store, getUser } from '../store'
 
 const props = defineProps({ post: Object })
 const openComments = ref(false)
@@ -62,7 +62,7 @@ async function deletePost() {
 }
 
 onBeforeMount(async () => {
-    author.value = capture_err(await rest.get('/api/users/' + props.post.author_id)).body
+    author.value = await getUser(props.post.author_id)
     comments.value = capture_err(await rest.get('/api/posts/' + props.post.post_id + '/comments')).body
 })
 
