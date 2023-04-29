@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import notify from './notify'
 
 // base styles & tailwind css
 import "./style.css"
@@ -16,3 +17,6 @@ loadUserData().finally(() => {
     app.mount('#app')
 });
 
+app.config.errorHandler = err => {
+    notify.send('error', `${err}`)
+}

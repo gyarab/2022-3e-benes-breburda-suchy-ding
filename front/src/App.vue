@@ -1,4 +1,11 @@
+<script setup>
+import { notifications } from './notify'
+</script>
 <template>
+
+  <div class="notification-block">
+      <div v-for="i in notifications" :key="i.text" class="notification" :class="{error: i.type == 'error'}"><p>{{ i.text }}</p><button @click="notifications.splice(notifications.findIndex(j => j.id == i.id), 1)"></button></div>
+  </div>
   <RouterView></RouterView>
 
   <div class="testing">
@@ -58,5 +65,23 @@ input {
   bottom: 20px;
   transform: translate(-50%, -50%);
   margin: 0 auto;
+}
+
+.notification-block {
+    position: fixed;
+    width: min(70ch, 95vw);
+    top: 5px;
+    left: 50vw;
+    transform: translateX(-50%);
+}
+
+.notification {
+    padding: 1rem;
+    background: #2a2a3c;
+    border-radius: 1rem;
+}
+
+.notification, .error {
+    background: #aa3333;
 }
 </style>
