@@ -10,13 +10,12 @@ async function request(method, url, body = null, headers = {}, init = {}) {
         body: body != null ? body instanceof Blob ? await body.arrayBuffer() : JSON.stringify(body) : undefined,
         ...init,
     };
-    console.log(params)
 
     const response = await fetch(new URL(url, API_HOST), params);
     return {
         status: response.status,
-        body: response.headers.get("content-type")  == "application/json" ? await response.json() : null
-    };    
+        body: response.headers.get("content-type") == "application/json" ? await response.json() : null
+    };
 }
 
 async function get(url, headers = {}, init = {}) {

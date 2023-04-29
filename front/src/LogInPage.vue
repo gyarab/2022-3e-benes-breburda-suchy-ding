@@ -5,6 +5,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
 
 import { useRouter } from 'vue-router'
 import rest from './rest';
+import { notify } from './notify'
 
 const router = useRouter()
 const email = ref('')
@@ -18,11 +19,20 @@ async function login() {
     password: password.value,
   });
 
-  if (resp.status == 200) {
-    window.localStorage.setItem('api-key', resp.body.token);
-    await loadUserData();
-    router.push({ path: '/' })
+  switch (resp.status) {
+    case 200:
+      window.localStorage.setItem('api-key', resp.body.token);
+      await loadUserData();
+      router.push({ path: '/' })
+      break
+    default:
+      notify('error', 'Invalid password')
+      break
+    case 404:
+      notify('error', 'Invalid email')
+      break
   }
+
 }
 
 function switchIcon() {

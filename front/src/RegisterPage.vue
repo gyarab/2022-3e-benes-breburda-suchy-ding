@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { notify } from '@kyvg/vue3-notification'
+import { notify } from './notify'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
 import rest from './rest'
 import { loadUserData } from './store'
@@ -21,7 +21,7 @@ function switchVisibility() {
 function passwordMatch() {
   showError.value = passwordField1.value && passwordField1.value === passwordField2.value
   if (!showError.value) {
-    notify({ title: "password mismatch", type: "error" })
+    notify('error', 'Passwords do not match')
   }
   return showError.value;
 }
@@ -29,6 +29,18 @@ function switchIcon() {
   whichIcon.value = !whichIcon.value;
 }
 async function register() {
+  if (username.value.length < 3) {
+    notify('error', 'Username must be at least 3 characters long')
+    return
+  }
+  if (passwordField1.value.length < 8) {
+    notify('error', 'Password must be at least 8 characters long')
+    return
+  }
+  if (!email.value || !/[^@]+@[^@]+\.[^@]+/.test(email.value)) {
+    notify('error', 'Email is invalid')
+    return
+  }
   if (!passwordMatch()) return;
   const reg_response = await rest.post('/api/users', {
     name: username.value,
@@ -45,8 +57,12 @@ async function register() {
     if (login_response.status == 200) {
       window.localStorage.setItem('api-key', login_response.body.token);
       await loadUserData();
-      router.push('/');
+      router.push('/setup');
+    } else {
+      notify('error', 'Registered, but failed to log in')
     }
+  } else {
+    notify('error', 'Failed to register')
   }
 }
 </script>
@@ -59,7 +75,7 @@ async function register() {
         <h2 class="text-3xl feather-font ml-4 mt-6 text-[#828282] right-0">register</h2>
       </div>
       <div> <input v-model="username" placeholder="Username" @keyup.enter="register" /> </div>
-      <div> <input v-model="email" placeholder="Email" @keyup.enter="register" /> </div>
+      <div> <input type="email" v-model="email" placeholder="Email" @keyup.enter="register" /> </div>
       <div class="password-field">
         <div> <input :type="showPassword ? 'text' : 'password'" v-model="passwordField1" placeholder="Password"
             @keyup.enter="login"> </div>
@@ -103,6 +119,7 @@ input {
   transform: translateY(-50%);
   right: 10px;
 }
+
 .submit-button {
   border: none;
   transition-duration: 0.5s;

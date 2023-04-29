@@ -28,7 +28,7 @@ function visualize() {
         for (let i = 0; i < dataArray.length; i++) {
             sum += dataArray[i];
         }
-        setIconColor(sum / 32 / 255)
+        setIconColor(sum / 32 / 255 * 0.80 + 0.2)
     }
 
     draw()
@@ -60,7 +60,7 @@ function buildCtx() {
 <template>
     <div class="flex items-center justify-center">
         <audio :src="'https://ding.ecko.ga' + props.url" crossorigin="anonymous" style="display: none" ref="audioEl"
-            @play="buildCtx"></audio>
+            @play="buildCtx" loop></audio>
         <PlayIcon v-if="!isPlaying" ref="iconEl" class="w-1/2 h-1/2 text-[#1D1D2A]" :class="{ playing: isPlaying }"
             @click="togglePlay" />
         <PauseIcon v-else ref="iconEl" class="w-1/2 h-1/2 text-[#1D1D2A]" :class="{ playing: isPlaying }"

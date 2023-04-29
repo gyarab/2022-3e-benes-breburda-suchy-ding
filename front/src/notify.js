@@ -17,7 +17,16 @@ function send(type, text, timeout = 3000) {
     }, timeout)
 }
 
-export default {
+function capture_err(resp) {
+    if (resp.status != 200) {
+        send('error', resp.body.message);
+        throw new Error(`API returned code ${resp.status}`);
+    }
+    return resp;
+}
+
+export {
     notifications,
-    send
+    send as notify,
+    capture_err
 }

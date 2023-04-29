@@ -22,19 +22,9 @@ const search = ref('')
           <input v-model="search" placeholder="Search" class="h-12 bg-transparent -ml-8 focus:outline-none">
         </div>
       </div>
-      <FeedVue url="/api/posts/feed"/>
+      <FeedVue url="/api/posts/feed" :endless=true />
     </div>
   </div>
 </template>
 
-<style scoped>
-.invisButton {
-  background: none;
-  border: none;
-  transition-duration: 0.3s;
-}
-.invisButton:hover {
-  background-color: #1D1D2A;
-  border: none;
-}
-</style>
+<style scoped></style>

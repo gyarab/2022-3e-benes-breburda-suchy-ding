@@ -2,21 +2,24 @@
 import { notifications } from './notify'
 </script>
 <template>
-
   <div class="notification-block">
-      <div v-for="i in notifications" :key="i.text" class="notification" :class="{error: i.type == 'error'}"><p>{{ i.text }}</p><button @click="notifications.splice(notifications.findIndex(j => j.id == i.id), 1)"></button></div>
+    <div v-for="i in notifications" :key="i.text" class="notification flex items-center"
+      :class="{ error: i.type == 'error' }">
+      <p>{{ i.text }}</p>
+      <button @click="notifications.splice(notifications.findIndex(j => j.id == i.id), 1)"
+        class="notificationCloseButton">X</button>
+    </div>
   </div>
-  <RouterView></RouterView>
+  <RouterView :key="$route.fullPath"></RouterView>
 
-  <div class="testing">
+  <!-- pozustatek nasich nadeji :( -->
+  <!-- <div class="testing">
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/login">Log in</RouterLink>
     <RouterLink to="/register">Register</RouterLink>
-    <RouterLink to="/profile">Profile</RouterLink>
-    <RouterLink to="/post">Post</RouterLink>
     <RouterLink to="/settings">Settings</RouterLink>
     <RouterLink to="/setup">Setup</RouterLink>
-  </div>
+  </div> -->
 </template> 
 
 <style>
@@ -68,20 +71,34 @@ input {
 }
 
 .notification-block {
-    position: fixed;
-    width: min(70ch, 95vw);
-    top: 5px;
-    left: 50vw;
-    transform: translateX(-50%);
+  position: fixed;
+  width: min(70ch, 95vw);
+  top: 5px;
+  left: 50vw;
+  transform: translateX(-50%);
+  font-weight: bold;
 }
 
 .notification {
-    padding: 1rem;
-    background: #2a2a3c;
-    border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background: #2a2a3c;
+  border-radius: 1rem;
 }
 
-.notification, .error {
-    background: #aa3333;
+.notification .error {
+  background: #aa3333;
+}
+
+.notificationCloseButton {
+  background: none;
+  border: none;
+  transition-duration: 0.3s;
+  margin-left: auto;
+}
+
+.notificationCloseButton:hover {
+  background: none;
+  border: none;
 }
 </style>
