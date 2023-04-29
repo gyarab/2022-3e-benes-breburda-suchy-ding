@@ -7,7 +7,7 @@ const props = defineProps({ comment: Object })
 const author = ref({})
 
 onBeforeMount(async () => {
-    author.value = getUser(props.comment.author_id)
+    author.value = await getUser(props.comment.author_id)
 })
 
 </script>
