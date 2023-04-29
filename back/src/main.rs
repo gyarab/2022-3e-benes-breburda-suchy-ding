@@ -34,8 +34,8 @@ async fn error_handler(mut res: tide::Response) -> tide::Result {
     }
     if let Some(err) = res.downcast_error::<ValidationErrors>() {
         res.set_body(json!({
-            "code": "asdf",
-            "message": "sdafsdf",
+            "code": "validation_error",
+            "message": "Invalid input",
             "errors": err
         }));
         res.set_status(422);

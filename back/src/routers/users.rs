@@ -431,7 +431,7 @@ pub async fn search_users(req: Request<WebState>) -> tide::Result {
     // NOTIME: awful full-text search, probably slow af but idc :))))
     let users = sqlx::query_as!(User, "
         SELECT u.*
-        FROM users u, to_tsquery('simple', $1) query
+        FROM users u, websearch_to_tsquery('simple', $1) query
         WHERE to_tsvector('simple', bio) @@ query OR position(lower($1) in lower(name)) > 0
         ORDER BY position(lower($1) in lower(name)) * 10 + ts_rank_cd(to_tsvector('simple', bio), query) DESC
     ", &query.search).fetch_all(req.state().db()).await?;
