@@ -4,7 +4,6 @@ import { store } from './store.js';
 import Home from './HomePage.vue'
 import LogIn from './LogInPage.vue'
 import Register from './RegisterPage.vue'
-import Profile from './ProfilePage.vue'
 import Settings from './SettingsPage.vue'
 import Setup from './SetupPage.vue'
 
@@ -42,14 +41,6 @@ const router = createRouter({
     beforeEnter: () => {
       if (loggedIn()) return { path: '/' };
     },
-  }, {
-    path: '/profile',
-    name: 'profile',
-    component: Profile,
-    meta: {
-      title: 'My profile',
-      requiresLogin: true,
-    }
   }, {
     path: '/settings',
     name: 'settings',

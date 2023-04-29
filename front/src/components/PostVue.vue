@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
 import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
-import { ChatBubbleBottomCenterTextIcon, UserCircleIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
+import { ChatBubbleBottomCenterTextIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
 import CommentVue from './CommentVue.vue'
 import AudioPlayer from './AudioPlayer.vue'
 import rest from '../rest'
@@ -91,8 +91,10 @@ onBeforeMount(async () => {
             <div class="flex flex-col h-full">
                 <div class="flex h-1/4 mt-6 items-center justify-center">
                     <button class="flex postUserButton w-full h-full mr-4 items-center">
-                        <UserCircleIcon class="h-14 mr-2" />
-                        <div>
+                        <div class="flex w-14 h-14 border-2 border-[#1D1D2A] rounded-full overflow-hidden items-center justify-center">
+                            <img class="w-full h-full object-cover" src="../assets/VaclavChalupnicekPP.jpg" alt="Image description">
+                        </div>
+                        <div class="ml-2">
                             {{ author.name }}
                         </div>
                     </button>

@@ -4,11 +4,14 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const firstPage = ref(true)
+const selectedImage = ref(null);
+const onImageSelected = (event) => {
+  selectedImage.value = event.target.files[0]
+}
 
 function setupDone() {
     router.push({ path: '/' })
 }
-
 </script>
 
 <template>
@@ -29,11 +32,14 @@ function setupDone() {
 
             <div class="flex flex-col w-1/2 justify-center">
                 <div class="flex w-1/2 mb-4">
-                    <div class="flex w-24 h-24 border-2 border-[#1D1D2A] rounded-full"></div>
+                    <div class="flex w-24 h-24 border-2 border-[#1D1D2A] rounded-full overflow-hidden items-center justify-center">
+                        <img class="w-full h-full object-cover" src="./assets/JanLanaPP.jpg" alt="Image description">
+                    </div>
                     <div class="flex flex-grow justify-center items-center">
-                        <button class="continueButton flex flex-grow ml-4 justify-center items-center">
-                            Upload Photo
-                        </button>
+                        <label for="fileInput" class="continueButton text-base flex w-full h-1/2 ml-4 justify-center items-center rounded-full cursor-pointer">
+                            Upload image
+                        </label>
+                        <input type="file" id="fileInput" @change="onImageSelected" class="custom-file-input">
                     </div>
                 </div>
                 <div class="flex w-1/2 border-2 rounded-3xl border-[#1D1D2A] mb-4">
@@ -43,13 +49,15 @@ function setupDone() {
                 <button @click="setupDone" class="continueButton flex w-1/2 mt-2 justify-center items-center">
                     Continue
                 </button>
-
             </div>
         </div>
     </div>
 </template>
 
 <style>
+.custom-file-input[type="file"] {
+    display: none;
+  }
 .continueButton {
     background-color: #1D1D2A;
     border: none;

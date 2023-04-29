@@ -2,7 +2,7 @@
 import { store } from './store';
 import { ref } from 'vue'
 import { SignalIcon, MagnifyingGlassIcon, PlayIcon, PauseIcon, MusicalNoteIcon } from '@heroicons/vue/20/solid'
-import { Cog8ToothIcon, UserCircleIcon, ArrowLeftCircleIcon, HomeIcon, InboxArrowDownIcon } from '@heroicons/vue/24/outline'
+import { Cog8ToothIcon, ArrowLeftCircleIcon, HomeIcon, InboxArrowDownIcon } from '@heroicons/vue/24/outline'
 import FeedVue from './components/FeedVue.vue'
 
 
@@ -66,8 +66,10 @@ function postClick() {
     <div class="flex flex-col w-1/4 items-center">
       <div>
         <button @click="profileClick" class="invisButton flex items-center w-64 m-2">
-          <UserCircleIcon class="h-10 mr-2" />
-          <div>
+          <div class="flex w-10 h-10 border-2 border-[#1D1D2A] rounded-full overflow-hidden items-center justify-center">
+              <img class="w-full h-full object-cover" src="./assets/JanLanaPP.jpg" alt="Image description">
+          </div>
+          <div class="ml-2">
             {{ store.user.name }}
           </div>
         </button>
@@ -121,8 +123,10 @@ function postClick() {
     <div v-else-if="profileView" class="flex flex-col w-1/2 items-center">
       <div class="w-full">
         <div class="flex flex-col w-full text-3xl font-bold justify-center">
-          <div class="flex flex-col mt-6 w-full justify-center">
-            <UserCircleIcon class="h-20" />
+          <div class="flex flex-col mt-6 w-full justify-center items-center">
+            <div class="flex w-20 h-20 border-2 border-[#1D1D2A] rounded-full overflow-hidden items-center justify-center">
+                <img class="w-full h-full object-cover" src="./assets/JanLanaPP.jpg" alt="Image description">
+            </div>
             <div class="flex w-full justify-center">
               {{ store.user.name }}
             </div>
