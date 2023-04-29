@@ -211,7 +211,7 @@ onMounted(() => {
             <p class="ml-5">{{ audioFileName }}</p>
           </div>
           <div class="flex w-1/2 h-13 items-center justify-end">
-            <button class="newpostButton flex items-center justify-center" @click="postAudio"
+            <button class="newpostButton flex items-center justify-center" @click="pauseAudio(); postAudio()"
               :disabled="audio == null || isRecording">
               <div>
                 Post

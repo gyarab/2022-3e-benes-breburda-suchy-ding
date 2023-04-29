@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
-import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon, ChevronRightIcon, TrashIcon } from '@heroicons/vue/20/solid'
-import { ChatBubbleBottomCenterTextIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
+import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+import { ChatBubbleBottomCenterTextIcon, BellIcon, InboxIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import CommentVue from './CommentVue.vue'
 import AudioPlayer from './AudioPlayer.vue'
 import ProfilePic from './ProfilePic.vue'
@@ -114,8 +114,9 @@ onBeforeMount(async () => {
                     @click="$router.push('/user/' + props.post.author_id)">
                     <button class="flex postUserButton w-full h-full mr-4 items-center">
                         <ProfilePic :user="props.post.author_id" class="h-14 w-14" />
-                        <div class="ml-2">
-                            {{ author.name }}
+                        <div class="ml-2 text-left">
+                            <p>{{ author.name }}</p>
+                            <p class="text-xs text-gray-400">{{ new Date(props.post.created).toLocaleString() }}</p>
                         </div>
                     </button>
                 </div>
@@ -140,7 +141,7 @@ onBeforeMount(async () => {
                 </div>
             </div>
         </div>
-        <TrashIcon v-if="myPost" class="relative top-0 right-0 m-4 w-8 h-8" @click="deletePost" />
+        <TrashIcon v-if="myPost" class="relative top-0 right-0 m-4 w-8 h-8 cursor-pointer" @click="deletePost" />
     </div>
 </template>
 
