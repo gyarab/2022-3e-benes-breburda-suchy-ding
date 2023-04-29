@@ -52,8 +52,12 @@ async function register() {
 </script>
 
 <template>
-  <div class="flex w-screen justify-center">
-    <div class="flex flex-col h-screen justify-center items-center">
+  <div class="flex h-screen items-center justify-center">
+    <div>
+      <div class="flex relative">
+        <h1 class="feather-font text-6xl mb-4">ding</h1>
+        <h2 class="text-3xl feather-font ml-4 mt-6 text-[#828282] right-0">register</h2>
+      </div>
       <div> <input v-model="username" placeholder="Username" @keyup.enter="register" /> </div>
       <div> <input v-model="email" placeholder="Email" @keyup.enter="register" /> </div>
       <div class="password-field">
@@ -79,7 +83,7 @@ async function register() {
           <EyeSlashIcon class="eyeIcon" />
         </button>
       </div>
-      <button class="submit-button" @click=" register " @keyup.enter=" register ">Confirm</button>
+      <button class="submit-button" @click=" register " @keyup.enter=" register ">Register</button>
     </div>
   </div>
 </template>
@@ -99,8 +103,9 @@ input {
   transform: translateY(-50%);
   right: 10px;
 }
-
 .submit-button {
+  border: none;
+  transition-duration: 0.5s;
   margin: 1rem 0;
 }
 </style>

@@ -7,9 +7,10 @@ async function request(method, url, body = null, headers = {}, init = {}) {
             authorization: window.localStorage.getItem('api-key'),
             ...headers,
         },
-        body: body != null ? JSON.stringify(body) : undefined,
+        body: body != null ? body instanceof Blob ? await body.arrayBuffer() : JSON.stringify(body) : undefined,
         ...init,
     };
+    console.log(params)
 
     const response = await fetch(new URL(url, API_HOST), params);
     return {
@@ -30,8 +31,23 @@ async function post(url, body = null, headers = {}, init = {}) {
     return await request('POST', url, body, headers, init);
 }
 
+async function patch(url, body = null, headers = {}, init = {}) {
+    return await request('PATCH', url, body, headers, init);
+}
+
+async function put(url, body = null, headers = {}, init = {}) {
+    return await request('PUT', url, body, headers, init);
+}
+
+function get_url(url) {
+    return new URL(url, API_HOST).toString()
+}
+
 export default {
     get,
     post,
-    del
+    del,
+    patch,
+    put,
+    get_url
 }

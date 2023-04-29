@@ -6,6 +6,8 @@ import LogIn from './LogInPage.vue'
 import Register from './RegisterPage.vue'
 import Settings from './SettingsPage.vue'
 import Setup from './SetupPage.vue'
+import SavedPostsPage from './SavedPostsPage.vue'
+import ProfilePage from './ProfilePage.vue'
 
 function loggedIn() {
   return store.loggedIn === true;
@@ -56,6 +58,34 @@ const router = createRouter({
     meta: {
       title: 'Setup',
       requiresLogin: false,
+    }
+  }, {
+    path: '/me',
+    name: 'profile',
+    component: ProfilePage,
+    props: {
+      user: 'me'
+    },
+    meta: {
+      title: 'My profile',
+      requiresLogin: true
+    }
+  }, {
+    path: '/saved',
+    name: 'saved-posts',
+    component: SavedPostsPage,
+    meta: {
+      title: 'Saved posts',
+      requiresLogin: true
+    }
+  }, {
+    path: '/user/:user',
+    name: 'profile',
+    component: ProfilePage,
+    props: true,
+    meta: {
+      title: 'User profile',
+      requiresLogin: true
     }
   }],
 });

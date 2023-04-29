@@ -15,7 +15,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css?family=Inter');
 
-
 #app {
   font-family: Inter;
   -webkit-font-smoothing: antialiased;

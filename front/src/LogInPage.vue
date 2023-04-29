@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { loadUserData } from './store'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid'
+
 import { useRouter } from 'vue-router'
 import rest from './rest';
 
@@ -37,6 +38,10 @@ function switchVisibility() {
 <template>
   <div class="flex h-screen items-center justify-center">
     <div>
+      <div class="flex relative">
+        <h1 class="feather-font text-6xl mb-4">ding</h1>
+        <h2 class="text-3xl feather-font ml-4 mt-6 text-[#828282] right-0">login</h2>
+      </div>
       <input v-model="email" placeholder="Email" @keyup.enter="login">
       <div class="password-field">
         <input :type="showPassword ? 'text' : 'password'" placeholder="Password" v-model="password" @keyup.enter="login">
@@ -56,6 +61,10 @@ function switchVisibility() {
 </template> 
 
 <style>
+.feather-font {
+  font-family: 'FeatherBold', sans-serif;
+}
+
 input {
   width: 100%;
 }

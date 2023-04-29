@@ -3,6 +3,8 @@ import { createApp } from 'vue'
 // base styles & tailwind css
 import "./style.css"
 
+import './assets/fonts.css';
+
 import router from './router.js'
 import App from './App.vue'
 import { loadUserData } from './store'

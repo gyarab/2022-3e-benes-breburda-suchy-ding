@@ -4,6 +4,7 @@ import { BellAlertIcon, InboxArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } 
 import { ChatBubbleBottomCenterTextIcon, BellIcon, InboxIcon } from '@heroicons/vue/24/outline';
 import CommentVue from './CommentVue.vue'
 import AudioPlayer from './AudioPlayer.vue'
+import ProfilePic from './ProfilePic.vue'
 import rest from '../rest'
 
 const props = defineProps({ post: Object })
@@ -89,11 +90,9 @@ onBeforeMount(async () => {
         </div>
         <div class="flex flex-col w-1/2">
             <div class="flex flex-col h-full">
-                <div class="flex h-1/4 mt-6 items-center justify-center">
+                <div class="flex h-1/4 mt-6 items-center justify-center" @click="$router.push('/user/'+props.post.author_id)">
                     <button class="flex postUserButton w-full h-full mr-4 items-center">
-                        <div class="flex w-14 h-14 border-2 border-[#1D1D2A] rounded-full overflow-hidden items-center justify-center">
-                            <img class="w-full h-full object-cover" src="../assets/VaclavChalupnicekPP.jpg" alt="Image description">
-                        </div>
+                        <ProfilePic class="w-14 h-14" :user="props.post.author_id"/>
                         <div class="ml-2">
                             {{ author.name }}
                         </div>
