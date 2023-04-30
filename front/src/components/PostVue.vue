@@ -75,7 +75,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div v-if="openComments" class="flex border-2 rounded-3xl border-[#1D1D2A] mb-2 h-1/2">
+    <div v-if="openComments" class="flex border-2 rounded-3xl border-[#1D1D2A] mb-2 h-[50vh]">
         <div class="flex w-1/2 m-2 items-center justify-center">
             <AudioPlayer :url="'/api/posts/' + props.post.post_id + '/content'" />
         </div>
@@ -109,7 +109,7 @@ onBeforeMount(async () => {
     </div>
 
 
-    <div v-else class="flex border-2 rounded-3xl border-[#1D1D2A] mb-2 h-1/3">
+    <div v-else class="flex border-2 rounded-3xl border-[#1D1D2A] mb-2 h-[33vh]">
 
         <div class="flex w-1/2 m-2 items-center justify-center">
             <AudioPlayer :url="'/api/posts/' + props.post.post_id + '/content'" />
