@@ -3,7 +3,7 @@ use std::{sync::Arc, process::Stdio};
 use crate::{fileman::FileManager, state::StateWithDb, models::{User, Post, PostPub, ClientError, Comment, PostPubExt}, utils::{resp, parse_uuid, log_err}, security, worker::WorkQueue, config::Config};
 use async_std::process::Command;
 use serde::Deserialize;
-use sqlx::{PgPool, PgExecutor};
+use sqlx::{PgPool, PgExecutor, QueryBuilder, Postgres};
 use tide::{Request, StatusCode, prelude::json, log};
 use uuid::Uuid;
 
@@ -199,19 +199,24 @@ pub async fn get_posts(req: Request<WebState>) -> tide::Result {
         ORDER BY sp.rank DESC, sp.created DESC
     ", &user.user_id).fetch_all(req.state().db()).await?;
 
+    //
     // update post ranks
     // NOTIME: sloooooow
+    let mut query = QueryBuilder::<Postgres>::new(
+        "INSERT INTO post_rank (post_id, user_id, rank) VALUES "
+    );
+    let mut separated = query.separated(",");
     for post in &posts {
-        sqlx::query!("
-            INSERT INTO post_rank (post_id, user_id, rank)
-            VALUES ($1, $2, -1)
-            ON CONFLICT (post_id, user_id)
-            DO UPDATE SET rank = post_rank.rank - 1
-        ",
-            post.post_id,
-            user.user_id
-        ).execute(req.state().db()).await?;
+        separated.push("(");
+        separated.push_bind_unseparated(post.post_id);
+        separated.push_unseparated(",");
+        separated.push_bind_unseparated(user.user_id);
+        separated.push_unseparated(", -1)");
     }
+
+    query.push("ON CONFLICT (post_id, user_id) DO UPDATE SET rank = post_rank.rank - 1");
+
+    query.build().execute(req.state().db()).await?;
 
     let posts_pub: Vec<PostPubExt> = posts.into_iter().map(|p| PostPubExt {
         post_id: p.post_id,
