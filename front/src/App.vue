@@ -12,7 +12,7 @@ import { notifications } from './notify'
   </div>
   <RouterView :key="$route.fullPath"></RouterView>
 
-  <!-- pozustatek nasich nadeji :( -->
+  <!-- pozustatek nasich nadeji ne lepsi zitrky :( -->
   <!-- <div class="testing">
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/login">Log in</RouterLink>

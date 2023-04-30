@@ -19,15 +19,15 @@ async function loadUserData() {
 
 async function getUser(user_id) {
     const populate = async () => {
-        const resp = capture_err(await rest.get('/api/users/'+user_id))
+        const resp = capture_err(await rest.get('/api/users/' + user_id))
         userCache[user_id] = resp.body
         return resp.body
     }
+
     return userCache[user_id] || await populate()
 }
 
 function flushUserCache() {
-    console.log('flush')
     userCache = {}
 }
 

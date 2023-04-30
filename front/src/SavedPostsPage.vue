@@ -1,6 +1,7 @@
 <script setup>
 import FeedVue from './components/FeedVue.vue'
 import SideBar from './components/SideBar.vue'
+import { store } from './store'
 </script>
 
 <template>
@@ -10,12 +11,9 @@ import SideBar from './components/SideBar.vue'
     </div>
 
     <div class="flex flex-col w-1/2 items-center">
-      <div class="w-full">
-        <div class="flex text-3xl font-bold h-16 justify-center">
-          <h1 class="mt-6">Saved Posts</h1>
-        </div>
-      </div>
-      <FeedVue url="/api/posts/saved"/>
+      <h1 class="text-3xl mt-6 font-bold">Saved Posts</h1>
+      <p class="text-xl text-gray-500">{{ store.user.name }}</p>
+      <FeedVue url="/api/posts/saved" />
     </div>
   </div>
 </template>
@@ -26,6 +24,7 @@ import SideBar from './components/SideBar.vue'
   border: none;
   transition-duration: 1s;
 }
+
 .playPauseButton:hover {
   background-color: #6b21a8;
   border: none;

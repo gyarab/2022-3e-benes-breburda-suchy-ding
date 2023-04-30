@@ -15,7 +15,7 @@ const addCommentActive = ref(false)
 const isDinged = ref(props.post.liked)
 const isSaved = ref(props.post.saved)
 const author = ref({})
-const comments = ref([])
+const comments = ref(null)
 const commentInput = ref("")
 const dings = ref(props.post.likes)
 const myPost = ref(props.post.author_id == store.user.user_id)
@@ -61,9 +61,15 @@ async function deletePost() {
     emit('delete')
 }
 
+async function toggleComments() {
+    if (!openComments.value && comments.value == null) {
+        comments.value = capture_err(await rest.get('/api/posts/' + props.post.post_id + '/comments')).body
+    }
+    openComments.value = !openComments.value
+}
+
 onBeforeMount(async () => {
     author.value = await getUser(props.post.author_id)
-    comments.value = capture_err(await rest.get('/api/posts/' + props.post.post_id + '/comments')).body
 })
 
 </script>
@@ -78,7 +84,7 @@ onBeforeMount(async () => {
                 <div class="flex flex-col h-full m-2">
                     <div class="flex mt-2 items-center">
                         <button class="iconButton w-8 h-8 p-0">
-                            <ChevronLeftIcon @click="openComments = !openComments" class="h-7" />
+                            <ChevronLeftIcon @click="toggleComments" class="h-7" />
                         </button>
                         <div class="text-xl">
                             Comments
@@ -129,9 +135,9 @@ onBeforeMount(async () => {
                     </button>
                     <p class="mr-6">{{ dings }}</p>
                     <button class="iconButton mr-1.5 w-8 h-8 p-0">
-                        <ChatBubbleBottomCenterTextIcon @click="openComments = !openComments" class="h-7" />
+                        <ChatBubbleBottomCenterTextIcon @click="toggleComments" class="h-7" />
                     </button>
-                    <p class="mr-6">{{ comments.length }}</p>
+                    <p class="mr-6">{{ props.post.comments }}</p>
                     <button v-if="isSaved" class="iconButton mr-1 w-8 h-8 p-0 text-[##c70a00]">
                         <InboxArrowDownIcon @click="saving" class="h-7 ml--4" />
                     </button>

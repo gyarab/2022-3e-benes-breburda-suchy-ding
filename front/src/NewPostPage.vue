@@ -1,7 +1,7 @@
 <script setup>
 import { PlayIcon, PauseIcon, MicrophoneIcon, ArrowUpTrayIcon } from '@heroicons/vue/20/solid'
 import SideBar from './components/SideBar.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Queue from './queue'
 import { useRouter } from 'vue-router'
 import rest from './rest'
@@ -18,10 +18,11 @@ let audioCtx = null
 let isPlaying = ref(false)
 const canvas = ref(null)
 const canvasCont = ref(null)
-const vizData = ref(new Queue(4000))
+const vizData = ref(null)
 const playingSource = ref(null)
 const audioInput = ref(null)
 const audioFileName = ref("")
+let animationFrame = null
 
 async function startRecord() {
   try {
@@ -42,7 +43,6 @@ async function startRecord() {
 
   mediaRecorder.onstop = () => {
     audio.value = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' })
-    console.log(audio.value)
   }
   isRecording.value = true
 
@@ -65,7 +65,7 @@ function visualize(source) {
   let ctx = canvas.value.getContext('2d')
 
   function draw() {
-    if (isRecording.value || isPlaying.value) requestAnimationFrame(draw)
+    if (isRecording.value || isPlaying.value) animationFrame = requestAnimationFrame(draw)
 
     analyser.getByteFrequencyData(dataArray)
     let sum = 0;
@@ -148,7 +148,7 @@ function redrawCanvas(ctx) {
   ctx.strokeStyle = 'rgb(200, 200, 200)'
   ctx.beginPath()
 
-  let queue_i = Math.max(vizData.value.head, vizData.value.tail - WIDTH / 4)
+  let queue_i = Math.max(vizData.value.head, vizData.value.tail - Math.round(WIDTH / 4))
   ctx.moveTo(0, HEIGHT - vizData.value.elements[queue_i] * HEIGHT * 0.7 - HEIGHT * 0.3)
   for (let i = 4; i < WIDTH; i += 4) {
     ctx.lineTo(i, HEIGHT - vizData.value.elements[queue_i] * HEIGHT * 0.7 - HEIGHT * 0.3)
@@ -156,9 +156,17 @@ function redrawCanvas(ctx) {
   }
   ctx.stroke()
 }
+
 window.addEventListener('resize', resizeCanvas)
 onMounted(() => {
   resizeCanvas()
+})
+
+onBeforeUnmount(() => {
+  isPlaying.value = false
+  isRecording.value = false
+  cancelAnimationFrame(animationFrame)
+  window.removeEventListener('resize', resizeCanvas)
 })
 
 </script>
@@ -177,47 +185,41 @@ onMounted(() => {
         <div ref="canvasCont" class="w-full h-2/5 border-2 rounded-3xl border-[#1D1D2A] overflow-hidden">
           <canvas ref="canvas"></canvas>
         </div>
-        <div class="w-full flex h-13 mt-2">
-          <div class="flex w-1/2 h-13 items-center justify-start">
-            <button :disabled="isRecording" class="flex playPauseButton mr-1 items-center justify-center"
-              @click="playAudio">
-              <PlayIcon class="h-6 w-6 p-0" />
-            </button>
-            <button :disabled="isRecording" class="flex playPauseButton mr-1 items-center justify-center"
-              @click="pauseAudio">
-              <PauseIcon class="h-6 w-6 p-0" />
-            </button>
-            <input type="file" ref="audioInput" accept="audio/*" hidden @change="onFilePick" />
-            <button :disabled="isRecording" class="uploadAudioButton mr-1 flex items-center justify-center"
-              @click="uploadAudio">
-              <ArrowUpTrayIcon class="h-6 mr-2 p-0" />
-              <div>
-                Upload
-              </div>
-            </button>
-            <button v-if="!isRecording" class="uploadAudioButton flex items-center justify-center" @click="startRecord()"
-              :disabled="isPlaying">
-              <MicrophoneIcon class="h-6 mr-2 p-0" />
-              <div>
-                Record
-              </div>
-            </button>
-            <button v-else class="uploadAudioButton flex items-center justify-center " @click="stopRecord()">
-              <MicrophoneIcon class="h-6 mr-2 p-0 text-[#6b21a8]" />
-              <div>
-                Recording
-              </div>
-            </button>
-            <p class="ml-5">{{ audioFileName }}</p>
-          </div>
-          <div class="flex w-1/2 h-13 items-center justify-end">
-            <button class="newpostButton flex items-center justify-center" @click="pauseAudio(); postAudio()"
-              :disabled="audio == null || isRecording">
-              <div>
-                Post
-              </div>
-            </button>
-          </div>
+        <div class="w-full flex h-13 mt-4 items-center">
+          <button :disabled="isRecording" class="flex playPauseButton mr-1 items-center justify-center"
+            @click="playAudio">
+            <PlayIcon class="h-6 w-6 p-0" />
+          </button>
+          <button :disabled="isRecording" class="flex playPauseButton mr-1 items-center justify-center"
+            @click="pauseAudio">
+            <PauseIcon class="h-6 w-6 p-0" />
+          </button>
+          <input type="file" ref="audioInput" accept="audio/*" hidden @change="onFilePick" />
+          <button :disabled="isRecording" class="uploadAudioButton mr-1 flex items-center justify-center"
+            @click="uploadAudio">
+            <ArrowUpTrayIcon class="h-6 mr-2 p-0" />
+            <div>
+              Upload
+            </div>
+          </button>
+          <button v-if="!isRecording" class="uploadAudioButton flex items-center justify-center" @click="startRecord()"
+            :disabled="isPlaying">
+            <MicrophoneIcon class="h-6 mr-2 p-0" />
+            Record
+          </button>
+          <button v-else class="uploadAudioButton flex items-center justify-center " @click="stopRecord()">
+            <MicrophoneIcon class="h-6 mr-2 p-0 text-[#6b21a8]" />
+            <div>
+              Recording
+            </div>
+          </button>
+          <p class="ml-5">{{ audioFileName }}</p>
+          <button class="newpostButton flex ml-auto items-center justify-center" @click="pauseAudio(); postAudio()"
+            :disabled="audio == null || isRecording">
+            <div>
+              Post
+            </div>
+          </button>
         </div>
       </div>
     </div>

@@ -103,6 +103,7 @@ async function saveUserSettings() {
             </div>
             <div v-else-if="tab == 'notification-settings'" class="flex flex-col">
                 <h1>list of notification settings</h1>
+                <h1>TBD</h1>
                 <div class="flex w-full mb-4 rounded-2xl">
                     <button @click="confirmNotificationSettingsChanges" class="flex rounded-full w-fit items-center m-auto">
                         <CheckIcon class="h-5 m-0" />

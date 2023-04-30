@@ -100,7 +100,10 @@ async function register() {
         </button>
       </div>
       <button class="submit-button" @click=" register " @keyup.enter=" register ">Register</button>
+      <div>Already a user? <RouterLink class="register" to="/login">Log in!</RouterLink>
+      </div>
     </div>
+
   </div>
 </template>
 

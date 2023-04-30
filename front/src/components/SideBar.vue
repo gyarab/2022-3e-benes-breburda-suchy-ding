@@ -12,6 +12,7 @@ function logout() {
 
 <template>
   <div>
+    <h1 class="ding-logo text-5xl m-4 text-center cursor-pointer select-none" @click="$router.push('/')">ding</h1>
     <button @click="$router.push('/user/me')" class="invisButton flex items-center w-64 m-2">
       <ProfilePic user="me" class="h-10 w-10" />
       <div class="ml-2">
@@ -76,5 +77,9 @@ function logout() {
 .invisButton:hover {
   background-color: #1D1D2A;
   border: none;
+}
+
+.ding-logo {
+  font-family: 'FeatherBold', sans-serif;
 }
 </style>

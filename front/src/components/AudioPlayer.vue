@@ -1,6 +1,6 @@
 <script setup>
 import { PlayIcon, PauseIcon } from '@heroicons/vue/24/outline'
-import { ref } from 'vue'
+import { ref, onBeforeUnmount } from 'vue'
 
 const props = defineProps({ url: String })
 const isPlaying = ref(false)
@@ -55,19 +55,20 @@ function buildCtx() {
     }
     visualize()
 }
+
+onBeforeUnmount(() => {
+    cancelAnimationFrame(animationFrame)
+    isPlaying.value = false
+})
 </script>
 
 <template>
     <div class="flex items-center justify-center">
         <audio :src="'https://ding.ecko.ga' + props.url" crossorigin="anonymous" style="display: none" ref="audioEl"
             @play="buildCtx" loop></audio>
-        <PlayIcon v-if="!isPlaying" ref="iconEl" class="w-1/2 h-1/2 text-[#1D1D2A]" :class="{ playing: isPlaying }"
-            @click="togglePlay" />
-        <PauseIcon v-else ref="iconEl" class="w-1/2 h-1/2 text-[#1D1D2A]" :class="{ playing: isPlaying }"
-            @click="togglePlay" />
+        <PlayIcon v-if="!isPlaying" ref="iconEl" class="w-1/2 h-1/2 text-[#1D1D2A]" @click="togglePlay" />
+        <PauseIcon v-else ref="iconEl" class="w-1/2 h-1/2 text-[#1D1D2A]" @click="togglePlay" />
     </div>
 </template>
 
-<style>
-.playing {}
-</style>
+<style></style>

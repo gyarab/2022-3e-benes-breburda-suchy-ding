@@ -9,8 +9,7 @@ const posts = ref([])
 let loading = false
 
 onMounted(async () => {
-  const lana = await rest.get(props.url)
-  posts.value = lana.body
+  posts.value = capture_err(await rest.get(props.url)).body
 })
 
 async function onScroll(ev) {
