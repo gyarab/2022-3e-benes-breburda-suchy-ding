@@ -11,8 +11,10 @@ import { store } from './store'
     </div>
 
     <div class="flex flex-col w-1/2 items-center">
-      <h1 class="text-3xl mt-6 font-bold">Saved Posts</h1>
-      <p class="text-xl text-gray-500">{{ store.user.name }}</p>
+      <div class="self-start">
+        <h1 class="text-3xl mt-6 font-bold">Saved Posts</h1>
+        <p class="text-xl text-gray-500">{{ store.user.name }}</p>
+      </div>
       <FeedVue url="/api/posts/saved" />
     </div>
   </div>
