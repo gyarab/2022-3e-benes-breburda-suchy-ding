@@ -1,11 +1,9 @@
 \section{Backend}
 
-Backend, tedy serverová část, je napsána v programovacím jazyce Rust, za využítí 
-knihovny Tide, a interaguje
-s PostgreSQL databází. Značna část logiky a integrita je řešena skrz omezení ve
-schématu databázových tabulek a skrz ručně napsané SQL příkazy. Frontend se serverem
-komunikuje pomocí paradigmatu REST API, přes protokol HTTP, přičemž těla požadavků a
-odpovědí jsou ve formátu JSON.
+Backend, tedy serverová část, je napsána v programovacím jazyce Rust, za využítí knihovny Tide, a
+interaguje s PostgreSQL databází. Značna část logiky a integrita je řešena skrz omezení ve schématu
+databázových tabulek a skrz ručně napsané SQL příkazy. Frontend se serverem komunikuje pomocí
+paradigmatu REST API, přes protokol HTTP, přičemž těla požadavků a odpovědí jsou ve formátu JSON.
 
 \begin{figure}[h!] 
     \centering
@@ -16,19 +14,19 @@ odpovědí jsou ve formátu JSON.
 
 \subsection{Databáze}
 
-Jako databázi jsme zvolili PostgreSQL kvůli rychlosti a množství funkcí, co dokáže.
-Celkově má databázové schéma devět tabulek, několik funkcí a náhledů, jak je možno vidět
-na obrázku \ref{er-diagram}.
+Jako databázi jsme zvolili PostgreSQL kvůli rychlosti a množství funkcí, co dokáže. Celkově má
+databázové schéma devět tabulek, několik funkcí a náhledů, jak je možno vidět na obrázku
+\ref{er-diagram}.
 
-Jedna z výhod PostgreSQL je zabudované full-text vyhledávání, které jsme využili
-ve funkci vyhledávání uživatelů. Ve vyhledávání pomocí samotného jména uživatele není
-full-text vyhledávání nejlepší metodou, jelikož pracuje s celými slovy, ale velmi se osvědčilo
-jako sekundární vyhledávání v celém textu popisku, který si uživatel nastaví.
+Jedna z výhod PostgreSQL je zabudované full-text vyhledávání, které jsme využili ve funkci
+vyhledávání uživatelů. Ve vyhledávání pomocí samotného jména uživatele není full-text vyhledávání
+nejlepší metodou, jelikož pracuje s celými slovy, ale velmi se osvědčilo jako sekundární vyhledávání
+v celém textu popisku, který si uživatel nastaví.
 
-\subsection{AI rozpoznávání mluvy}
+\subsection{AI rozpoznávání mluvy} \label{backend-ai}
 
-Jeden z hlavních bodů v zadání bylo automatické filtrování mluveného slova. To je možné provést několika
-způsoby:
+Jeden z hlavních bodů v zadání bylo automatické filtrování mluveného slova. To je možné provést
+několika způsoby:
 
 \begin{enumerate}
     \item Analýza frekvencí ve zvukovém souboru.
@@ -40,26 +38,66 @@ způsoby:
         \begin{enumerate}
             \item Využití jednoho z několika veřejných API na rozpoznávání hlasu.
                 \begin{itemize}
-                    \item Jestliže je nutné API posílat každý příspěvek, pak bude provoz sítě velmi drahý.
+                    \item Jestliže je nutné API posílat každý příspěvek, pak bude provoz sítě velmi
+                        drahý.
                 \end{itemize}
-            \item Využití již natrénovaného modelu na vlastních strojích.
+            \item Využití již natrénovaného modelu na vlastních strojích. \label{ai-method}
                 \begin{itemize}
-                    \item Provozovatel sítě musí mít k dispozici stroje, které dokáží příspěvky rychle zpracovat.
+                    \item Provozovatel sítě musí mít k dispozici stroje, které dokáží příspěvky
+                        rychle zpracovat.
                 \end{itemize}
             \item Natrénování vlastního rozpoznávacího modelu a jeho užití na vlastních strojích.
                 \begin{itemize}
-                    \item Provozovatel musí mít hodně prostředků nejen ke zpracovávání příspěvků, ale také ke trénování modelu.
+                    \item Provozovatel musí mít hodně prostředků nejen ke zpracovávání příspěvků,
+                        ale také ke trénování modelu.
                 \end{itemize}
         \end{enumerate}
 \end{enumerate}
 
-Pro Ding jsme zvolili variantu 2. b. Pro rozpoznávání mluveného slova používáme AI model "Whisper AI" od americké
-společnosti OpenAI\cite{openai-whisper}. Tento model je veřejně přístupný a je možné si ho spustit na osobním počítači, nebo serveru.
-Původní model velmi využívá GPU na grafické kartě počítače. Většina serveru ale grafické karty nemá a tudíž je
-nutné výpočty provádět na samotném CPU. Tento problém řeší projekt whisper.cpp od Georgiho Gerganova, který model upravil
+Pro Ding jsme zvolili variantu \ref{ai-method}. Pro rozpoznávání mluveného slova používáme AI model
+"Whisper AI" od americké společnosti OpenAI \cite{openai-whisper}. Tento model je veřejně přístupný
+a je možné si ho spustit na osobním počítači, nebo serveru. Původní model velmi využívá GPU na
+grafické kartě počítače. Většina serveru ale grafické karty nemá a tudíž je nutné výpočty provádět
+na samotném CPU. Tento problém řeší projekt whisper.cpp od Georgiho Gerganova, který model upravil
 tak, aby ho bylo možné spustit na mnohem slabších zařízeních, než jsou speciální počítače OpenAI.
 
-Při přidání nového příspěvku se tedy nejdříve zvukový soubor zkontroluje, že je funkční a ve správném formátu.
-Dál se využije AI modelu pro přepsání jakéhokoliv mluveného slova. Pokud je příspěvek v nesprávném formátu, nebo
-v něm model najde slova, pak je zpětně smazán. Je tedy možné, že na pár vteřin (nebo minut, záleží na zatížení stroje),
-bude příspěvek přístupný, i když by měl být smazán.
+Při přidání nového příspěvku se tedy nejdříve zvukový soubor zkontroluje, že je funkční a ve
+správném formátu. Dál se využije AI modelu pro přepsání jakéhokoliv mluveného slova. Pokud je
+příspěvek v nesprávném formátu, nebo v něm model najde slova, pak je zpětně smazán. Je tedy možné,
+že na pár vteřin (nebo minut, záleží na zatížení stroje), bude příspěvek přístupný, i když by měl
+být smazán.
+
+\subsection{E-mail a odložené úkoly}
+
+Ding je navržen tak, aby každý požadavek čekal co nejkratší dobu. Například na vyslání e-mailu, nebo
+kontrolu příspěvku (popisována v sekci \ref{backend-ai}) požadavek nemusí čekat. Knihovna Tide tuto
+vlastnost nemá zabudovanou a bylo tedy potřeba si vytvořit vlastní systém pro odbavování těchto
+"odložitelných" úkolů.
+
+Celá aplikace běží v asynchronní smyčce, což umožňuje aplikaci dělání více věcí najednou. Narozdíl
+od čistého programování s vlákny není paralelizace "pravá". V asynchronní smyčce může být mnoho
+úkolů, které se mají konat, a procesor mezi nimi přepíná (obrázek \ref{async-diagram}). V tradičním
+programování s vlákny beží všechny úkoly najednou na více procesorových jádrech, nebo se o přepínání
+stará operační systém. Operační systém však neví, kdy se aplikaci hodí, či nehodí, aby procesor
+přepnul mezi úkoly, a programátor si musí hlídat, aby dvě vlákna neupravovala informace na jednom
+místě. V asynchronním programování je tento problém značně zredukovaný, jelikož procesor mezi úkoly
+přepíná jen při klíčovém slově \texttt{await}.
+
+\begin{figure}[h!] 
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/async.png}
+    \caption{Synchronní, asynchronní a vícevláknové programování}
+    \label{async-diagram}
+\end{figure}
+
+\subsection{Autentizace uživatelů}
+
+Autentizace uživatelů je provedena přes relační tokeny. Aby uživatel dostal token pro svou relaci,
+musí vyslat požadavek \texttt{POST /api/sessions} se svými přihlašovacími údaji (email, heslo).
+Backend tyto údaje ověří vůči informacím v databázi a jestliže souhlasí, pak vytvoří pro uživatele
+nový relační token, který složí k autentizaci a identifikaci dalších požadavků. Tento token si
+prohlížeč ukládá v paměti \texttt{window.localStorage}.
+
+Před uložením do databáze jsou hesla zahašována algoritmem \texttt{PBKDF2} se \num{100 000} iteracemi. V
+databázovém sloupci s heslem je také uložena sůl použita při hašování a informace o hašovacím
+algoritmu pro případ, že by bylo algoritmus potřeba v budoucnu změnit.
