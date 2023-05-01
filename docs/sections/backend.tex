@@ -101,3 +101,15 @@ prohlížeč ukládá v paměti \texttt{window.localStorage}.
 Před uložením do databáze jsou hesla zahašována algoritmem \texttt{PBKDF2} se \num{100 000} iteracemi. V
 databázovém sloupci s heslem je také uložena sůl použita při hašování a informace o hašovacím
 algoritmu pro případ, že by bylo algoritmus potřeba v budoucnu změnit.
+
+\subsection{Feed a hodnocení příspěvků}
+
+Jedna z nejdůležitějších častí sociálních sítí je jejich hlavní stránka / feed. Je to nekonečný proud
+příspěvků od uživatelů sítě, algoritmicky vybraných na míru pro každého uživatele zvlášť. Ding není
+další z mnoha sociálních sítí, které chtějí udržet pozornost uživatele co nejdelší dobu. Věříme, že 
+uživatelé na Dingu spíše zůstanou kvůli skvělému obsahu.
+
+Algoritmus pro hlavní feed tedy není složitý. Při každém požadavku \texttt{GET /api/posts/feed} se
+aktualizuje hodnocení pro nové příspěvky, které se pro požadavek vrací jako odpověď. Toto zaručí, že
+při dalších požadavcích se nevrací ty samé příspěvky. Další kritérium je čas, kdy byl příspěvek vytvořen.
+Novější příspěvky jsou algoritmem preferovány.

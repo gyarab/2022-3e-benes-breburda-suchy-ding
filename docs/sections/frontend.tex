@@ -36,8 +36,8 @@ Chtěli jsme, aby stránka působila přátelsky a přívětivě. Všechna tlač
 příspěvky a inputové pole jsou zaoblovány, zdají se tak sympatičtější. Na 
 ostrou hranu prakticky napříč celým programem nenarazíte, tento trend ctí
 i font hlavního loga, se kterým se nový uživatel setkává například hned u
-vytváření vlastního účtu. I ikony, se kterými jsme se rozhodli pracovat ze
-sady "heroicons" působí na oko příjemně.
+vytváření vlastního účtu. I ikony ze sady "heroicons", se kterými jsme se
+rozhodli pracovat, na oko působí příjemně.
 
 \subsection{Router}
 
@@ -45,24 +45,42 @@ Vue router je oficiální router pro Vue.js. Důvodem, proč jsme se rozhodli
 pracovat s Vue router je, že nám umožňuje přepínat mezi jednotlivými stránkami
 bez nutnosti načítat celou stránku znovu, což je výhodné pro uživatele, protože
 se mu stránka bude načítat rychleji, což zlepší celkový dojem z aplikace.
+% ...
 
 \subsection{Komponenty}
 
-Komponenty jsou základní stavební jednotkou Vue.js aplikace. Jsou to vlastně
-opakující se bloky kódu, které můžeme použít k vytvoření uživatelského rozhraní.
-Komponenty jsou znovupoužitelné a můžeme je použít k vytvoření stejných bloků
-kódu v aplikaci. Komponenty jsou velmi užitečné pro vytváření opakujících se
-elementů, jako jsou například příspěvky, komentáře, uživatelské profily, atd.
-Komponenty jsou také velmi užitečné pro udržování kódu, protože můžeme použít
-stejnou komponentu v různých částech aplikace.
-
 Komponenty jsou základní stavební jednotkou Vue.js aplikace. Využíváme je
 k vytvoření uživatelského rozhraní. Komponenty jsou znovupoužitelné a díky tomu
-nemusíme po každé vytvářet stejné bloky kódu, díky čemuž šetříme čas a zjednodušujeme
-si práci. Komponenty jsou také velmi užitečné pro udržování kódu, protože můžeme
-použít stejnou komponentu v různých částech aplikace.
+nemusíme po každé vytvářet stejné bloky kódu, tudíž šetříme čas a zjednodušujeme
+si práci. Importujeme je do souboru, kde je můžeme zavolat. Komponenty jsou velmi
+užitečné pro vytváření opakujících se elementů, jako jsou například příspěvky, 
+komentáře, nebo nastavení uživatelského profilu. 
 
-Importujeme je do souboru, kde
-je můžeme zavolat. Komponenty jsou velmi užitečné pro vytváření opakujících se
-elementů, jako jsou například příspěvky, komentáře, nebo nastavení uživatelského
-profilu. 
+\subsection{Vytváření nového příspěvku}
+
+Uživatel může nový příspěvek vytvořit po kliknutí na tlačítko "New Post" na domovské
+stránce. Po kliknutí na tlkačítko je uživatel přesměrován na stránku, kde může
+vytvořit nový příspěvek. Uživatel může příspěvek vytvořit dvěma způsoby, buť nahráním 
+audio souboru ze zařízení, nebo nahráním zvuku pomocí mikrofonu. Pokud uživatel 
+začne nahrávat zvuk pomocí mikrofonu, tak se mu zobrazí vizualizér. vizualizér se
+mu zobrazí i v případě, že nahrává audio soubor ze zařízenní a začne ho přehrávat.
+
+\subsubsection{Vizualizér}
+
+Vizualizér se uživateli zobrazí ve chvíli, co začne pomocí mikrofonu nahrávat zvuk,
+či po zahájení přehrávaní nahraného audio souboru. Je vytvořený pomocí "web audio API"
+a HTML elementu \texttt{<canvas>}. Na canvas se vykresluje linka, která mění svou výšku podle
+hlasitosti zvuku. Ta je získána pomocí \texttt{AnalyserNode}. Délka linky je omezená, aby
+se nezobrazovala mimo canvas. Tohoto jsme docílili pomocí \texttt{Queue} datové struktury, 
+která jak název napovídá je fronta. Jakmile se linka dostane na konec canvasu, tak se 
+vykreslovat nepřestane, akorát se zleva postupně stará data odebírají.
+
+AnalyserNode přijímá zvukový signál a generuje výstupní data, která obsahují
+informace o frekvenčním spektru a hlasitosti signálu. Tyto informace používáme 
+k vizualizaci zvukového signálu skrze metodu \texttt{getByteFrequencyData()}, která
+umožňuje získávání informací o frekvenčním spektru signálu v podobě pole bytů,
+kde každý prvek pole reprezentuje hlasitost signálu v daném frekvenčním pásmu. \autocite{analysernode-mdn}
+
+AnalyserNode má také několik vlastností, které ovlivňují jeho chování.
+Vlastnost \texttt{fftSize} určuje množství frekvencí, které FFT (Fast Fourier Transform) algoritmus
+rozeznává.
