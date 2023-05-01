@@ -18,7 +18,7 @@ const firstPage = ref(true)
         <div v-else class="flex h-full w-full justify-center">
             <div class="flex flex-col w-1/2 justify-center items-center">
                 <h1 class="text-3xl font-bold">Set yourself up!</h1>
-                <h2 class="text-xl font-bold mt-2 mb-10 text-[#828282]">you little wanking cunt...</h2>
+                <h2 class="text-xl font-bold mt-2 mb-10 text-[#828282]">it will only take a minute...</h2>
             </div>
             <div class="flex flex-col w-1/2 justify-center">
                 <SetUp @submit="$router.push('/')" submitButtonText="Confirm" class="w-1/2" />

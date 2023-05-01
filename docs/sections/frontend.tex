@@ -1,0 +1,68 @@
+\section{Frontend}
+
+Celý frontend naší aplikace je postavený ve Vue.js, moderním
+JavaScriptovém frameworku určeného k tvorbě uživatelského rozhraní.
+Zaměřuje se na deklarativní renderování a složení komponent.
+Pro komunikaci frontendu s backendem pracujeme s REST API, který
+pro přenos dat využívá základních protokolů a technologií, jako je
+protokol HTTP, přičemž těla požadavků a odpovědí jsou ve formátu JSON.
+
+\subsection{Design UI}
+
+Vzhled uživatelského rozhraní je samozřejmě jednou z nejdůležitějších
+vlastností stránky sociální sítě. Lišit se může v závislosti například
+na cílové skupině uživatelů, či zaměření sítě. Nicméně, ty nejdůležitější 
+obecné principy jsme museli dodržovat a brát v úvahu i při našem návrhu.
+Design musí být konsistentní, přehledný a jednoduchý. Když se se stránkou
+uživatel setká poprvé, nemusí ho nijak zvlášť ohromit, stačí, aby se v ní
+byl hned schopný zorientovat a bezmyšlenkovitě s ní interagovat. Hlavní
+funkce a navigace by měly být intuitivní, viditelné a snadno dostupné. 
+
+Je nesmírně důležité, aby byl v celé aplikaci zachován jednotný design 
+daných prvků designu (jako jsou např. tlačítka, ikony, či formulářové pole)
+a aby si tyto prvky se sebou navzájem dobře vizuálně vycházeli. Proto jsme
+v průběhu projektu vybírali jen z úzkého výběru barev, kterými jsou hlavně 
+odstíny tmavší šedi, které se navzájem doplňujou, nikoli dráždí. Tyto šedé
+tóny konstrastuje pestrá fialová, kterou využíváme k zbarvení a odlišení 
+některých funkcí stránky. Křiklavý rozpor šedého pozadí a fialových
+detailů uživateli poukazuje na důležitost těchto funkcí. Touto fialovou se
+rozhodně šetří, zesiluje tím právě dojem její rarity a důsledně i hodnoty.
+Právě touto barvou se hlavně chlubí všudypřítomné tlačítko "New Post" 
+(Nový příspěvek), které i svou velikostí je pro uživatelé naproto
+nepřehlédnutelné.
+
+Vedle barev prkvů je ale samozřejmě důležitý i jejich tvar a viditelný obsah.
+Chtěli jsme, aby stránka působila přátelsky a přívětivě. Všechna tlačítka,
+příspěvky a inputové pole jsou zaoblovány, zdají se tak sympatičtější. Na 
+ostrou hranu prakticky napříč celým programem nenarazíte, tento trend ctí
+i font hlavního loga, se kterým se nový uživatel setkává například hned u
+vytváření vlastního účtu. I ikony, se kterými jsme se rozhodli pracovat ze
+sady "heroicons" působí na oko příjemně.
+
+\subsection{Router}
+
+Vue router je oficiální router pro Vue.js. Důvodem, proč jsme se rozhodli
+pracovat s Vue router je, že nám umožňuje přepínat mezi jednotlivými stránkami
+bez nutnosti načítat celou stránku znovu, což je výhodné pro uživatele, protože
+se mu stránka bude načítat rychleji, což zlepší celkový dojem z aplikace.
+
+\subsection{Komponenty}
+
+Komponenty jsou základní stavební jednotkou Vue.js aplikace. Jsou to vlastně
+opakující se bloky kódu, které můžeme použít k vytvoření uživatelského rozhraní.
+Komponenty jsou znovupoužitelné a můžeme je použít k vytvoření stejných bloků
+kódu v aplikaci. Komponenty jsou velmi užitečné pro vytváření opakujících se
+elementů, jako jsou například příspěvky, komentáře, uživatelské profily, atd.
+Komponenty jsou také velmi užitečné pro udržování kódu, protože můžeme použít
+stejnou komponentu v různých částech aplikace.
+
+Komponenty jsou základní stavební jednotkou Vue.js aplikace. Využíváme je
+k vytvoření uživatelského rozhraní. Komponenty jsou znovupoužitelné a díky tomu
+nemusíme po každé vytvářet stejné bloky kódu, díky čemuž šetříme čas a zjednodušujeme
+si práci. Komponenty jsou také velmi užitečné pro udržování kódu, protože můžeme
+použít stejnou komponentu v různých částech aplikace.
+
+Importujeme je do souboru, kde
+je můžeme zavolat. Komponenty jsou velmi užitečné pro vytváření opakujících se
+elementů, jako jsou například příspěvky, komentáře, nebo nastavení uživatelského
+profilu. 

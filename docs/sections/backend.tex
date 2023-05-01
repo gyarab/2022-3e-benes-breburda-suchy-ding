@@ -1,7 +1,7 @@
 \section{Backend}
 
 Backend, tedy serverová část, je napsána v programovacím jazyce Rust, za využítí knihovny Tide, a
-interaguje s PostgreSQL databází. Značna část logiky a integrita je řešena skrz omezení ve schématu
+interaguje s PostgreSQL databází. Značná část logiky a integrita je řešena skrz omezení ve schématu
 databázových tabulek a skrz ručně napsané SQL příkazy. Frontend se serverem komunikuje pomocí
 paradigmatu REST API, přes protokol HTTP, přičemž těla požadavků a odpovědí jsou ve formátu JSON.
 
@@ -57,7 +57,7 @@ několika způsoby:
 Pro Ding jsme zvolili variantu \ref{ai-method}. Pro rozpoznávání mluveného slova používáme AI model
 "Whisper AI" od americké společnosti OpenAI \cite{openai-whisper}. Tento model je veřejně přístupný
 a je možné si ho spustit na osobním počítači, nebo serveru. Původní model velmi využívá GPU na
-grafické kartě počítače. Většina serveru ale grafické karty nemá a tudíž je nutné výpočty provádět
+grafické kartě počítače. Většina serverů ale grafické karty nemá a tudíž je nutné výpočty provádět
 na samotném CPU. Tento problém řeší projekt whisper.cpp od Georgiho Gerganova, který model upravil
 tak, aby ho bylo možné spustit na mnohem slabších zařízeních, než jsou speciální počítače OpenAI.
 
